@@ -4,7 +4,7 @@ void main() {
   runApp(const MyApp());
 }
 
-// ANDREW WRITING A COMMENT
+// Parsha WRITING A COMMENT
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -98,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'You have pushed the button this many times Alberto:',
+              'You have pushed the button this many times Parsha:',
             ),
             Text(
               '$_counter',
