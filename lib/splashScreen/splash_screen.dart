@@ -28,7 +28,7 @@ class _MySplashScreenState extends State<MySplashScreen> {
   Widget build(BuildContext context) {
     return Material(
         child: Container(
-            color: Colors.green,
+            color: Colors.brown,
             child: Center(
                 child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
