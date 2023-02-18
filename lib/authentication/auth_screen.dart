@@ -20,8 +20,8 @@ class _AuthScreenState extends State<AuthScreen> {
             decoration: const BoxDecoration(
                 gradient: LinearGradient(
               colors: [
-                Color.fromARGB(255, 222, 177, 118),
-                Color.fromARGB(155, 12, 43, 38),
+                Color.fromARGB(255, 188, 169, 146),
+                Color.fromARGB(255, 120, 130, 100),
               ],
               begin: FractionalOffset(0.0, 0.0),
               end: FractionalOffset(1.0, 0.0),
@@ -30,23 +30,25 @@ class _AuthScreenState extends State<AuthScreen> {
             )),
           ),
           title: const Text(
-            "Welcome",
+            "HungerBox",
             style: TextStyle(
-              fontSize: 80,
-              color: Color.fromARGB(255, 212, 182, 171),
-              fontFamily: "Raleway",
+              fontSize: 24,
+              color: Color.fromARGB(255, 255, 255, 255),
+              fontFamily: "Raleway-Bold",
             ),
           ),
           centerTitle: true,
           bottom: const TabBar(
             tabs: [
               Tab(
-                icon: Icon(Icons.lock, color: Colors.white),
+                icon:
+                    Icon(Icons.lock, color: Color.fromARGB(255, 255, 255, 255)),
                 text: "Login",
               ),
               Tab(
-                icon: Icon(Icons.person, color: Colors.white),
-                text: "Register",
+                icon: Icon(Icons.person,
+                    color: Color.fromARGB(255, 255, 255, 255)),
+                text: "Registration",
               ),
             ],
             /*indicatorColor: Color.fromARGB(19, 38, 112, 40),
@@ -59,16 +61,16 @@ class _AuthScreenState extends State<AuthScreen> {
             begin: Alignment.topRight,
             end: Alignment.bottomLeft,
             colors: [
-              Color.fromARGB(255, 222, 177, 118),
-              Color.fromARGB(155, 12, 43, 38),
+              Color.fromARGB(255, 255, 255, 255),
+              Color.fromARGB(155, 255, 255, 255),
             ],
           )),
-          /*child: const TabBarView(
+          child: const TabBarView(
             children: [
               LoginScreen(),
               RegisterScreen(),
             ],
-          ), */
+          ),
         ),
       ),
     );

@@ -11,7 +11,7 @@ class MySplashScreen extends StatefulWidget {
 
 class _MySplashScreenState extends State<MySplashScreen> {
   startTimer() {
-    Timer(const Duration(seconds: 4), () async {
+    Timer(const Duration(seconds: 2), () async {
       Navigator.push(
           context, MaterialPageRoute(builder: (c) => const AuthScreen()));
     });
@@ -28,7 +28,7 @@ class _MySplashScreenState extends State<MySplashScreen> {
   Widget build(BuildContext context) {
     return Material(
         child: Container(
-            color: Colors.black,
+            color: Colors.white,
             child: Center(
                 child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
