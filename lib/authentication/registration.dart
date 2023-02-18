@@ -51,6 +51,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
             const SizedBox(
               height: 3,
             ),
+            InkWell(
+              child: CircleAvatar(
+                radius: MediaQuery.of(context).size.width * .2,
+                backgroundColor: Colors.white,
+                backgroundImage: imageXFile == null
+                    ? null
+                    : FileImage(File(imageXFile!.path)),
+                child: imageXFile == null
+                    ? Icon(
+                        Icons.add_photo_alternate,
+                        size: MediaQuery.of(context).size.width * .2,
+                        color: Colors.blueGrey,
+                      )
+                    : null,
+              ),
+            ),
+            const SizedBox(
+              height: 3,
+            ),
             Form(
               key: _formKey,
               child: Column(
