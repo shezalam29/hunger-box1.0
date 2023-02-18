@@ -92,6 +92,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     isObscure: false,
                     enabled: true,
                   ),
+                  const SizedBox(
+                    height: 15,
+                  ),
                   Container(
                     width: 400,
                     height: 40,
