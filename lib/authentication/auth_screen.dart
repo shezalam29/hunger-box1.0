@@ -30,7 +30,7 @@ class _AuthScreenState extends State<AuthScreen> {
             )),
           ),
           title: const Text(
-            "HungerBox",
+            "Welcome",
             style: TextStyle(
               fontSize: 24,
               color: Color.fromARGB(255, 255, 255, 255),

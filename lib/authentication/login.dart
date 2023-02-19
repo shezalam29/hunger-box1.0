@@ -15,31 +15,21 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  XFile? imageXFile;
-  final ImagePicker _picker = ImagePicker();
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
-          const SizedBox(
-            height: 3,
-          ),
-          InkWell(
-            child: CircleAvatar(
-              radius: MediaQuery.of(context).size.width * .2,
-              backgroundColor: Colors.white,
-              backgroundImage:
-                  imageXFile == null ? null : FileImage(File(imageXFile!.path)),
-              child: imageXFile == null
-                  ? Icon(
-                      Icons.add_photo_alternate,
-                      size: MediaQuery.of(context).size.width * .2,
-                      color: Colors.blueGrey,
-                    )
-                  : null,
+          Container(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.all(15),
+              child: Image.asset(
+                "images/logo.png",
+                height: 150,
+                width: 300,
+              ),
             ),
           ),
           const SizedBox(
@@ -64,9 +54,12 @@ class _LoginScreenState extends State<LoginScreen> {
               ],
             ),
           ),
+          const SizedBox(
+            height: 16,
+          ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-                primary: Colors.purple,
+                primary: Color.fromRGBO(25, 117, 244, 100),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 50, vertical: 20)),
             onPressed: () => print("Clicked"),

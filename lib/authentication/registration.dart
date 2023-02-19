@@ -22,6 +22,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   XFile? imageXFile;
   final ImagePicker _picker = ImagePicker();
 
+  Future<void> _getImage() async {
+    imageXFile = await _picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      imageXFile;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -30,28 +37,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
           mainAxisSize: MainAxisSize.max,
           children: [
             const SizedBox(
-              height: 3,
+              height: 10,
             ),
             InkWell(
-              child: CircleAvatar(
-                radius: MediaQuery.of(context).size.width * .2,
-                backgroundColor: Colors.white,
-                backgroundImage: imageXFile == null
-                    ? null
-                    : FileImage(File(imageXFile!.path)),
-                child: imageXFile == null
-                    ? Icon(
-                        Icons.add_photo_alternate,
-                        size: MediaQuery.of(context).size.width * .2,
-                        color: Colors.blueGrey,
-                      )
-                    : null,
-              ),
-            ),
-            const SizedBox(
-              height: 3,
-            ),
-            InkWell(
+              onTap: () {
+                _getImage();
+              },
               child: CircleAvatar(
                 radius: MediaQuery.of(context).size.width * .2,
                 backgroundColor: Colors.white,
