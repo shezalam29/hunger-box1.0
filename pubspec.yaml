@@ -33,6 +33,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   image_picker: ^0.8.6+2
   image_picker_ios: ^0.8.6+8
+  geolocator: ^9.0.2
+  geocoding: ^2.0.5
 
 dev_dependencies:
   flutter_test:
