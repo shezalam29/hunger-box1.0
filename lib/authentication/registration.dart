@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:hunger_box/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -22,11 +24,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
   XFile? imageXFile;
   final ImagePicker _picker = ImagePicker();
 
+  Position? position;
+  List<Placemark>? placeMarks;
+
   Future<void> _getImage() async {
     imageXFile = await _picker.pickImage(source: ImageSource.gallery);
     setState(() {
       imageXFile;
     });
+  }
+
+  getCurrentLocation() async {
+    LocationPermission permission;
+    permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    Position newPosition = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+    position = newPosition;
+    placeMarks = await placemarkFromCoordinates(
+      position!.latitude,
+      position!.longitude,
+    );
+
+    Placemark pMark = placeMarks![0];
+
+    String completeAddress =
+        '${pMark.subThoroughfare} ${pMark.thoroughfare}, ${pMark.subLocality} ${pMark.locality}, ${pMark.subAdministrativeArea}, ${pMark.administrativeArea} ${pMark.postalCode}, ${pMark.country}';
+
+    locationController.text = completeAddress;
   }
 
   @override
@@ -118,7 +146,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         Icons.location_on,
                         color: Colors.white,
                       ),
-                      onPressed: () => print("clicked"),
+                      onPressed: () {
+                        getCurrentLocation();
+                      },
                       style: ElevatedButton.styleFrom(
                         primary: Color.fromARGB(255, 120, 130, 100),
                         shape: RoundedRectangleBorder(
