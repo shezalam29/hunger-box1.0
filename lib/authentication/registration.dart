@@ -3,7 +3,10 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hunger_box/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:hunger_box/widgets/error_dialog.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:hunger_box/widgets/loading_dialog.dart';
+import 'package:firebase_storage/firebase_storage.dart' as fstorage;
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -26,6 +29,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Position? position;
   List<Placemark>? placeMarks;
+
+  String vendorImageUrl = "";
 
   Future<void> _getImage() async {
     imageXFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -55,6 +60,64 @@ class _RegisterScreenState extends State<RegisterScreen> {
         '${pMark.subThoroughfare} ${pMark.thoroughfare}, ${pMark.subLocality} ${pMark.locality}, ${pMark.subAdministrativeArea}, ${pMark.administrativeArea} ${pMark.postalCode}, ${pMark.country}';
 
     locationController.text = completeAddress;
+  }
+
+  Future<void> formValidation() async {
+    if (imageXFile == null) {
+      showDialog(
+          context: context,
+          builder: (c) {
+            return ErrorDialog(
+              message: "Please choose an image.",
+            );
+          });
+    } else {
+      if (passwordController.text == confirmPasswordController.text) {
+        if (confirmPasswordController.text.isNotEmpty &&
+            emailController.text.isNotEmpty &&
+            nameController.text.isNotEmpty &&
+            locationController.text.isNotEmpty) {
+          // upload image to firestore
+
+          showDialog(
+              context: context,
+              builder: (c) {
+                return LoadingDialog(
+                  message: "Registering",
+                );
+              });
+          String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+          fstorage.Reference reference = fstorage.FirebaseStorage.instance
+              .ref()
+              .child("vendors")
+              .child(fileName);
+          fstorage.UploadTask uploadTask =
+              reference.putFile(File(imageXFile!.path));
+          fstorage.TaskSnapshot taskSnapshot =
+              await uploadTask.whenComplete(() {});
+          await taskSnapshot.ref.getDownloadURL().then((url) {
+            vendorImageUrl = url;
+            // save registration information to firestore
+          });
+        } else {
+          showDialog(
+              context: context,
+              builder: (c) {
+                return ErrorDialog(
+                  message: "One or more fields is incomplete.",
+                );
+              });
+        }
+      } else {
+        showDialog(
+            context: context,
+            builder: (c) {
+              return ErrorDialog(
+                message: "Passwords do not match.",
+              );
+            });
+      }
+    }
   }
 
   @override
@@ -118,12 +181,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     isObscure: false,
                   ),
                   CustomTextField(
-                    data: Icons.email,
-                    controller: confirmEmailController,
-                    hintText: "Confirm Email",
-                    isObscure: false,
-                  ),
-                  CustomTextField(
                     data: Icons.my_location,
                     controller: locationController,
                     hintText: "Address",
@@ -168,7 +225,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   primary: Colors.purple,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 50, vertical: 20)),
-              onPressed: () => print("Clicked"),
+              onPressed: () {
+                formValidation();
+              },
               child: const Text(
                 "Sign Up",
                 style: TextStyle(
