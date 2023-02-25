@@ -50,7 +50,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     color: Color.fromARGB(255, 255, 255, 255)),
                 text: "Registration",
               ),
-            ],
+            ],  
             /*indicatorColor: Color.fromARGB(19, 38, 112, 40),
             indicatorWeight: 2, */
           ),
