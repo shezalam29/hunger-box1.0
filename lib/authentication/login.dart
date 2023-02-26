@@ -59,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-                primary: Color.fromRGBO(25, 117, 244, 100),
+                primary: const Color.fromRGBO(25, 117, 244, 100),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 50, vertical: 20)),
             onPressed: () => print("Clicked"),

@@ -16,6 +16,7 @@ class _AuthScreenState extends State<AuthScreen> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           flexibleSpace: Container(
             decoration: const BoxDecoration(
                 gradient: LinearGradient(
@@ -28,14 +29,6 @@ class _AuthScreenState extends State<AuthScreen> {
               stops: [0.0, 1.0],
               tileMode: TileMode.clamp,
             )),
-          ),
-          title: const Text(
-            "Welcome",
-            style: TextStyle(
-              fontSize: 24,
-              color: Color.fromARGB(255, 255, 255, 255),
-              fontFamily: "Raleway-Bold",
-            ),
           ),
           centerTitle: true,
           bottom: const TabBar(
