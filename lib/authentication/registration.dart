@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:hunger_box/fb_handler/fb_handler.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hunger_box/mainScreens/home_screen.dart';
@@ -26,14 +25,11 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
-  TextEditingController lastNameController = TextEditingController();
-  TextEditingController idController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController confirmEmailController = TextEditingController();
   TextEditingController locationController = TextEditingController();
-  bool _isVendor = false;
 
   XFile? imageXFile;
   final ImagePicker _picker = ImagePicker();
@@ -71,46 +67,63 @@ class _RegisterScreenState extends State<RegisterScreen> {
     locationController.text = completeAddress;
   }
 
-  /// Register a new student or vendor by authenticating them as a user
-  /// and inserting their input information into the database
-  Future<void> registerNewUser() async {
-    if (!_isRegistrationFormValid()) {
-      return;
-    }
-
-    showDialog(
-        context: context,
-        builder: (c) {
-          return LoadingDialog(
-            message: "Registering",
-          );
-        });
-
-    if (_isVendor) {
-      await FBH.registerNewVendor(
-        nameController.text,
-        emailController.text,
-        passwordController.text,
-        locationController.text,
-        imageXFile!.path.trim(),
-        position!.latitude,
-        position!.longitude,
-      );
+  Future<void> formValidation() async {
+    if (imageXFile == null) {
+      showDialog(
+          context: context,
+          builder: (c) {
+            return ErrorDialog(
+              message: "Please choose an image.",
+            );
+          });
     } else {
-      await FBH.registerNewStudent(
-        emailController.text.trim(),
-        passwordController.text,
-        firstName: nameController.text,
-        lastName: lastNameController.text,
-        hunterId: int.parse(idController.text),
-      );
-    }
+      if (passwordController.text == confirmPasswordController.text) {
+        if (confirmPasswordController.text.isNotEmpty &&
+            emailController.text.isNotEmpty &&
+            nameController.text.isNotEmpty &&
+            locationController.text.isNotEmpty) {
+          // upload image to firestore
 
-    Navigator.pop(context);
-    //send the user to home page
-    ////////////THISSSSSS PART IS IMPORTANT///////////////
-    Route newRoute = MaterialPageRoute(builder: (c) => const HomeScreen());
-    Navigator.pushReplacement(context, newRoute);
+          showDialog(
+              context: context,
+              builder: (c) {
+                return LoadingDialog(
+                  message: "Registering",
+                );
+              });
+          String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+          fstorage.Reference reference = fstorage.FirebaseStorage.instance
+              .ref()
+              .child("vendors")
+              .child(fileName);
+          fstorage.UploadTask uploadTask =
+              reference.putFile(File(imageXFile!.path));
+          fstorage.TaskSnapshot taskSnapshot =
+              await uploadTask.whenComplete(() {});
+          await taskSnapshot.ref.getDownloadURL().then((url) {
+            vendorImageUrl = url;
+            // save registration information to firestore
+            authenticateSellerAndSignUp();
+          });
+        } else {
+          showDialog(
+              context: context,
+              builder: (c) {
+                return ErrorDialog(
+                  message: "One or more fields is incomplete.",
+                );
+              });
+        }
+      } else {
+        showDialog(
+            context: context,
+            builder: (c) {
+              return ErrorDialog(
+                message: "Passwords do not match.",
+              );
+            });
+      }
+    }
   }
 
   void authenticateSellerAndSignUp() async {
@@ -168,162 +181,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_isVendor) {
-      return _buildUser(context);
-    } else {
-      return _buildVendor(context);
-    }
-  }
-
-  /// Test whether registration forms have the appropriate forms filled in based
-  /// on which user is registering as a vendor or a user
-  bool _isRegistrationFormValid() {
-    if (imageXFile == null && _isVendor) {
-      showDialog(
-          context: context,
-          builder: (c) {
-            return ErrorDialog(
-              message: "Please choose an image.",
-            );
-          });
-      return false;
-    }
-
-    if (passwordController.text != confirmPasswordController.text) {
-      showDialog(
-          context: context,
-          builder: (c) {
-            return ErrorDialog(
-              message: "Passwords do not match.",
-            );
-          });
-      return false;
-    } else if (!_studentFormValidation() && !_vendorFormValidation()) {
-      showDialog(
-          context: context,
-          builder: (c) {
-            return ErrorDialog(
-              message: "One or more fields is incomplete.",
-            );
-          });
-    }
-
-    return true;
-  }
-
-  /// Check whether the student form has all related forms filled in
-  bool _studentFormValidation() {
-    return (!_isVendor &&
-        confirmPasswordController.text.isNotEmpty &&
-        emailController.text.isNotEmpty &&
-        nameController.text.isNotEmpty &&
-        lastNameController.text.isNotEmpty &&
-        idController.text.isNotEmpty);
-  }
-
-  /// Check whether the vendor form has all related forms filled in
-  bool _vendorFormValidation() {
-    return (_isVendor &&
-        confirmPasswordController.text.isNotEmpty &&
-        emailController.text.isNotEmpty &&
-        nameController.text.isNotEmpty &&
-        locationController.text.isNotEmpty);
-  }
-
-  /// Build the user registration page
-  Widget _buildUser(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            const SizedBox(
-              height: 10,
-            ),
-            Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  CustomTextField(
-                    data: Icons.email,
-                    controller: emailController,
-                    hintText: "Email",
-                    isObscure: false,
-                  ),
-                  CustomTextField(
-                    data: Icons.lock,
-                    controller: passwordController,
-                    hintText: "Password",
-                    isObscure: false,
-                  ),
-                  CustomTextField(
-                    data: Icons.lock,
-                    controller: confirmPasswordController,
-                    hintText: "Confirm Password",
-                    isObscure: false,
-                  ),
-                  CustomTextField(
-                    data: Icons.person,
-                    controller: nameController,
-                    hintText: "First Name",
-                    isObscure: false,
-                  ),
-                  CustomTextField(
-                    data: Icons.person,
-                    controller: lastNameController,
-                    hintText: "Last Name",
-                    isObscure: false,
-                  ),
-                  CustomTextField(
-                    data: Icons.numbers,
-                    controller: idController,
-                    hintText: "Hunter ID",
-                    isObscure: false,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  primary: Colors.purple,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 50, vertical: 20)),
-              onPressed: () {
-                registerNewUser();
-              },
-              child: const Text(
-                "Sign Up",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _isVendor = true;
-                  });
-                },
-                child: Text(
-                  "Register as Vendor",
-                  style: TextStyle(
-                      color: Colors.blue, decoration: TextDecoration.underline),
-                )),
-          ],
-        ),
-      ),
-    );
-  }
-
-  /// Build the vendor registration page
-  Widget _buildVendor(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
         child: Column(
@@ -428,7 +285,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 50, vertical: 20)),
               onPressed: () {
-                registerNewUser();
+                formValidation();
               },
               child: const Text(
                 "Sign Up",
@@ -437,23 +294,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _isVendor = false;
-                  });
-                },
-                child: Text(
-                  "Register as Student",
-                  style: TextStyle(
-                      color: Colors.blue, decoration: TextDecoration.underline),
-                )),
-            const SizedBox(
-              height: 10,
             ),
           ],
         ),
