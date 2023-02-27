@@ -12,6 +12,14 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+<<<<<<< HEAD
+    return Container(
+      child: Text(
+        "This is a home page",
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+=======
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: Container(
@@ -45,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
             });
           },
           child: const Text("Logout"),
+>>>>>>> main
         ),
       ),
     );
