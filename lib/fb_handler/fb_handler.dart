@@ -102,7 +102,7 @@ class FirebaseHandler {
     }
 
     String imgName = DateTime.now().millisecondsSinceEpoch.toString();
-    String imgUrl = await _uploadVendorImage(imgName, imagePath);
+    String imgUrl = await _uploadImage(imgName, imagePath);
 
     String? currUserId = currentUser?.uid;
     return await _insertNewUsrInfo("vendors", currUserId!, <String, dynamic>{
@@ -150,19 +150,12 @@ class FirebaseHandler {
     return true;
   }
 
-  Future<String> _uploadVendorImage(String imgName, String imgPath) async {
-    // TODO not returning the proper url to the image
+  /// Uploads an image to the [FirebaseStorage] and 
+  Future<String> _uploadImage(String imgName, String imgPath) async {
     fstorage.Reference reference =
         fstorage.FirebaseStorage.instance.ref().child("vendors").child(imgName);
     fstorage.UploadTask uploadTask = reference.putFile(File(imgPath));
     fstorage.TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
-    String url = await taskSnapshot.ref.getDownloadURL();
-    print(url);
-    return url;
-    //   await taskSnapshot.ref.getDownloadURL().then((url) {
-    //     return url;
-    //     // save registration information to firestore
-    //   });
-    //   return "FAILURE";
+    return taskSnapshot.ref.getDownloadURL();
   }
 }

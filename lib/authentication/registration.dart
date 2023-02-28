@@ -83,6 +83,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           );
         });
 
+    // TODO on failure of registration throw some window and stay on page
     if (_isVendor) {
       await FBH.registerNewVendor(
         nameController.text,
@@ -110,45 +111,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     Navigator.pushReplacement(context, newRoute);
   }
 
-  void authenticateSellerAndSignUp() async {
-    User? currentUser;
-    final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-    await firebaseAuth
-        .createUserWithEmailAndPassword(
-      email: emailController.text.trim(),
-      password: passwordController.text.trim(),
-    )
-        .then((auth) {
-      currentUser = auth.user;
-    });
-
-    if (currentUser != null) {
-      saveDataToFirestore(currentUser!).then((value) {
-        Navigator.pop(context);
-        //send the user to home page
-        ////////////THISSSSSS PART IS IMPORTANT///////////////
-        Route newRoute = MaterialPageRoute(builder: (c) => const HomeScreen());
-        Navigator.pushReplacement(context, newRoute);
-      });
-    }
-  }
-
-  Future saveDataToFirestore(User currentUser) async {
-    FirebaseFirestore.instance.collection("vendors").doc(currentUser.uid).set({
-      "vendorUID": currentUser.uid,
-      "vendorEmail": currentUser.email,
-      "vendorName": nameController.text.trim(),
-      "vendorAvatarUrl": vendorImageUrl,
-      "address": completeAddress,
-      "status": "approved",
-      "earnings": 0.0,
-      "lat": position!.latitude,
-      "lng": position!.longitude,
-    });
-
-    //save data locally
-  }
-
   @override
   Widget build(BuildContext context) {
     if (!_isVendor) {
@@ -157,6 +119,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return _buildVendor(context);
     }
   }
+
+  // ============================ PRIVATE METHODS  ============================
 
   /// Test whether registration forms have the appropriate forms filled in based
   /// on which user is registering as a vendor or a user
@@ -194,7 +158,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return true;
   }
 
-  /// Check whether the student form has all related forms filled in
+  /// Check whether the student form has a forms filled in
   bool _studentFormValidation() {
     return (!_isVendor &&
         confirmPasswordController.text.isNotEmpty &&
