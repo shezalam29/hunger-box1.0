@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hunger_box/authentication/auth_screen.dart';
 import 'package:hunger_box/global/global.dart';
 
+import '../widgets/drawer.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -31,8 +33,10 @@ class _HomeScreenState extends State<HomeScreen> {
           sharedPreferences!.getString("name")!,
         ),
         centerTitle: true,
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: true,
       ),
+      // ignore: prefer_const_constructors
+      drawer: MyDrawer(),
       body: Center(
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
