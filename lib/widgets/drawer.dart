@@ -24,7 +24,7 @@ class _MyDrawerState extends State<MyDrawer> {
                   elevation: 10,
                   child: Padding(
                     padding: const EdgeInsets.all(1.0),
-                    child: Container(
+                    child: SizedBox(
                       height: 160,
                       width: 160,
                       child: CircleAvatar(
