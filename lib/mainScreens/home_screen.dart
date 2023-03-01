@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hunger_box/authentication/auth_screen.dart';
 import 'package:hunger_box/global/global.dart';
+import 'package:hunger_box/uploadScreen/menus_upload.dart';
 
 import '../widgets/drawer.dart';
 
@@ -31,9 +32,19 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         title: Text(
           sharedPreferences!.getString("name")!,
+          style: const TextStyle(fontSize: 30),
         ),
         centerTitle: true,
         automaticallyImplyLeading: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.post_add, color: Colors.orange),
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (c) => const MenusUpload()));
+            },
+          ),
+        ],
       ),
       // ignore: prefer_const_constructors
       drawer: MyDrawer(),
