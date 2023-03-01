@@ -98,9 +98,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       await FBH.registerNewStudent(
         emailController.text.trim(),
         passwordController.text,
-        firstName: nameController.text,
+        studName: nameController.text,
         lastName: lastNameController.text,
-        hunterId: int.parse(idController.text),
+        //hunterId: int.parse(idController.text),
       );
     }
 
@@ -423,14 +423,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
             const SizedBox(
               height: 10,
             ),
+            InkWell(
+              onTap: () {
+                _getImage();
+              },
+              child: CircleAvatar(
+                radius: MediaQuery.of(context).size.width * .2,
+                backgroundColor: Colors.white,
+                backgroundImage: imageXFile == null
+                    ? null
+                    : FileImage(File(imageXFile!.path)),
+                child: imageXFile == null
+                    ? Icon(
+                        Icons.add_photo_alternate,
+                        size: MediaQuery.of(context).size.width * .2,
+                        color: Colors.blueGrey,
+                      )
+                    : null,
+              ),
+            ),
+            const SizedBox(
+              height: 3,
+            ),
             Form(
               key: _formKey,
               child: Column(
                 children: [
                   CustomTextField(
+                    data: Icons.person,
+                    controller: nameController,
+                    hintText: "Name",
+                    isObscure: false,
+                  ),
+                  CustomTextField(
                     data: Icons.email,
                     controller: emailController,
-                    hintText: "Email",
+                    hintText: "College Email",
                     isObscure: false,
                   ),
                   CustomTextField(
@@ -445,24 +473,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     hintText: "Confirm Password",
                     isObscure: false,
                   ),
-                  CustomTextField(
-                    data: Icons.person,
-                    controller: nameController,
-                    hintText: "First Name",
-                    isObscure: false,
-                  ),
-                  CustomTextField(
-                    data: Icons.person,
-                    controller: lastNameController,
-                    hintText: "Last Name",
-                    isObscure: false,
-                  ),
-                  CustomTextField(
-                    data: Icons.numbers,
-                    controller: idController,
-                    hintText: "Hunter ID",
-                    isObscure: false,
-                  ),
+                  // CustomTextField(
+                  //   data: Icons.numbers,
+                  //   controller: idController,
+                  //   hintText: "Hunter ID",
+                  //   isObscure: false,
+                  // ),
                 ],
               ),
             ),
@@ -471,7 +487,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                  primary: Colors.purple,
+                  primary: Color.fromRGBO(25, 117, 244, 100),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 50, vertical: 20)),
               onPressed: () {
@@ -486,7 +502,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
             ),
             const SizedBox(
-              height: 10,
+              height: 15,
             ),
             GestureDetector(
                 onTap: () {
@@ -495,10 +511,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   });
                 },
                 child: const Text(
-                  "Register as Vendor",
+                  "Or Register as Vendor Here",
                   style: TextStyle(
                       color: Colors.blue, decoration: TextDecoration.underline),
                 )),
+            const SizedBox(
+              height: 50,
+            ),
           ],
         ),
       ),
@@ -548,6 +567,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     isObscure: false,
                   ),
                   CustomTextField(
+                    data: Icons.email,
+                    controller: emailController,
+                    hintText: "Email",
+                    isObscure: false,
+                  ),
+                  CustomTextField(
                     data: Icons.lock,
                     controller: passwordController,
                     hintText: "Password",
@@ -557,12 +582,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     data: Icons.lock,
                     controller: confirmPasswordController,
                     hintText: "Confirm Password",
-                    isObscure: false,
-                  ),
-                  CustomTextField(
-                    data: Icons.email,
-                    controller: emailController,
-                    hintText: "Email",
                     isObscure: false,
                   ),
                   CustomTextField(
@@ -622,7 +641,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
             ),
             const SizedBox(
-              height: 10,
+              height: 15,
             ),
             GestureDetector(
                 onTap: () {
@@ -630,13 +649,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     _isVendor = false;
                   });
                 },
-                child: Text(
+                child: const Text(
                   "Register as Student",
                   style: TextStyle(
                       color: Colors.blue, decoration: TextDecoration.underline),
                 )),
             const SizedBox(
-              height: 10,
+              height: 50,
             ),
           ],
         ),

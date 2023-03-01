@@ -6,7 +6,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as fstorage;
 
-
 class FirebaseHandler {
   /// Singleton to insure only single user is logged on
   static final FirebaseHandler _self = FirebaseHandler._();
@@ -58,7 +57,7 @@ class FirebaseHandler {
   /// Then inserts a document containing their information into the [studentUsers]
   /// collection, keyed to the users authentication [uid]
   Future<bool> registerNewStudent(String email, String psswrd,
-      {String firstName = "", String lastName = "", int hunterId = -1}) async {
+      {String studName = "", String lastName = "", int hunterId = -1}) async {
     try {
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: psswrd)
@@ -77,9 +76,9 @@ class FirebaseHandler {
         "studentUsers", currentUser!.uid, <String, dynamic>{
       "currentPoints": 0,
       "email": email.trim(),
-      "firstName": firstName.trim(),
-      "lastName": lastName.trim(),
-      "userId": hunterId,
+      "name": studName.trim(),
+      //"userId": hunterId,
+      "studentUID": currentUser!.uid,
     });
   }
 
