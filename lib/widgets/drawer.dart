@@ -19,18 +19,14 @@ class _MyDrawerState extends State<MyDrawer> {
             padding: const EdgeInsets.only(top: 25, bottom: 10),
             child: Column(
               children: [
-                Material(
-                  borderRadius: const BorderRadius.all(Radius.circular(80)),
+                const Material(
+                  borderRadius: BorderRadius.all(Radius.circular(80)),
                   elevation: 10,
                   child: Padding(
-                    padding: const EdgeInsets.all(1.0),
+                    padding: EdgeInsets.all(1.0),
                     child: SizedBox(
                       height: 160,
                       width: 160,
-                      child: CircleAvatar(
-                        backgroundImage: NetworkImage(
-                            sharedPreferences!.getString("photoUrl")!),
-                      ),
                     ),
                   ),
                 ),

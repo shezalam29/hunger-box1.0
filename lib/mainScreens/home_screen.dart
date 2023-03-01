@@ -30,10 +30,9 @@ class _HomeScreenState extends State<HomeScreen> {
             tileMode: TileMode.clamp,
           )),
         ),
-        // ignore: prefer_const_constructors
-        title: Text(
-         "Name"//sharedPreferences!.getString("name")!,
-          style: const TextStyle(fontSize: 30),
+        title: const Text(
+          "Name",
+          style: TextStyle(fontSize: 30),
         ),
         centerTitle: true,
         automaticallyImplyLeading: true,
