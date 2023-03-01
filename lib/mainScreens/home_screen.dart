@@ -30,9 +30,8 @@ class _HomeScreenState extends State<HomeScreen> {
             tileMode: TileMode.clamp,
           )),
         ),
-        title: const Text(
-          "Name",
-          style: TextStyle(fontSize: 30),
+        title: Text(
+          sharedPreferences!.getString("name")!,
         ),
         centerTitle: true,
         automaticallyImplyLeading: true,
@@ -46,9 +45,22 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+
       // ignore: prefer_const_constructors
       drawer: MyDrawer(),
-      body: const Center(),
+      body: Center(
+        child: ElevatedButton(
+          child: Text("Logout"),
+          style: ElevatedButton.styleFrom(
+            primary: Colors.cyan,
+          ),
+          onPressed: () {
+            firebaseAuth.signOut();
+            Navigator.push(
+                context, MaterialPageRoute(builder: (c) => AuthScreen()));
+          },
+        ),
+      ),
     );
   }
 }

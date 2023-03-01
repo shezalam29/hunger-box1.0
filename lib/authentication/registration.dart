@@ -25,14 +25,21 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  //Vendor TextEditingControllers
   TextEditingController nameController = TextEditingController();
-  TextEditingController lastNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
   TextEditingController emailController = TextEditingController();
-  TextEditingController idController = TextEditingController();
   TextEditingController confirmEmailController = TextEditingController();
   TextEditingController locationController = TextEditingController();
+  //Student TextEditingControllers
+  TextEditingController studnameController = TextEditingController();
+  TextEditingController studpasswordController = TextEditingController();
+  TextEditingController studconfirmPasswordController = TextEditingController();
+  TextEditingController studemailController = TextEditingController();
+  TextEditingController studconfirmEmailController = TextEditingController();
+  TextEditingController studidController = TextEditingController();
+
   bool _isVendor = false;
 
   XFile? imageXFile;
@@ -96,27 +103,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
     } else {
       await FBH.registerNewStudent(
-        emailController.text.trim(),
-        passwordController.text,
-        studName: nameController.text,
-        lastName: lastNameController.text,
+        studemailController.text.trim(),
+        studpasswordController.text,
+        studName: studnameController.text,
         //hunterId: int.parse(idController.text),
       );
     }
 
-    Navigator.pop(context);
-    //send the user to home page
-    ////////////THISSSSSS PART IS IMPORTANT///////////////
-    Route newRoute = MaterialPageRoute(builder: (c) => const HomeScreen());
-    Navigator.pushReplacement(context, newRoute);
-
-    sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences!.setString("uid", FBH.currentUser!.uid);
-    await sharedPreferences!
-        .setString("email", FBH.currentUser!.email.toString());
-    await sharedPreferences!
-        .setString("vendorName", nameController.text.trim());
-    await sharedPreferences!.setString("photoUrl", vendorImageUrl);
+    // sharedPreferences = await SharedPreferences.getInstance();
+    // await sharedPreferences!.setString("uid", FBH.currentUser!.uid);
+    // await sharedPreferences!
+    //     .setString("email", FBH.currentUser!.email.toString());
+    // await sharedPreferences!
+    //     .setString("vendorName", nameController.text.trim());
+    // await sharedPreferences!.setString("photoUrl", vendorImageUrl);
   }
 
   Future<void> formValidation() async {
@@ -233,125 +233,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //   return SingleChildScrollView(
-    //     child: Container(
-    //       child: Column(
-    //         mainAxisSize: MainAxisSize.max,
-    //         children: [
-    //           const SizedBox(
-    //             height: 10,
-    //           ),
-    //           InkWell(
-    //             onTap: () {
-    //               _getImage();
-    //             },
-    //             child: CircleAvatar(
-    //               radius: MediaQuery.of(context).size.width * .2,
-    //               backgroundColor: Colors.white,
-    //               backgroundImage: imageXFile == null
-    //                   ? null
-    //                   : FileImage(File(imageXFile!.path)),
-    //               child: imageXFile == null
-    //                   ? Icon(
-    //                       Icons.add_photo_alternate,
-    //                       size: MediaQuery.of(context).size.width * .2,
-    //                       color: Colors.blueGrey,
-    //                     )
-    //                   : null,
-    //             ),
-    //           ),
-    //           const SizedBox(
-    //             height: 3,
-    //           ),
-    //           Form(
-    //             key: _formKey,
-    //             child: Column(
-    //               children: [
-    //                 CustomTextField(
-    //                   data: Icons.person,
-    //                   controller: nameController,
-    //                   hintText: "Name",
-    //                   isObscure: false,
-    //                 ),
-    //                 CustomTextField(
-    //                   data: Icons.lock,
-    //                   controller: passwordController,
-    //                   hintText: "Password",
-    //                   isObscure: false,
-    //                 ),
-    //                 CustomTextField(
-    //                   data: Icons.lock,
-    //                   controller: confirmPasswordController,
-    //                   hintText: "Confirm Password",
-    //                   isObscure: false,
-    //                 ),
-    //                 CustomTextField(
-    //                   data: Icons.email,
-    //                   controller: emailController,
-    //                   hintText: "Email",
-    //                   isObscure: false,
-    //                 ),
-    //                 CustomTextField(
-    //                   data: Icons.my_location,
-    //                   controller: locationController,
-    //                   hintText: "Address",
-    //                   isObscure: false,
-    //                   enabled: true,
-    //                 ),
-    //                 const SizedBox(
-    //                   height: 15,
-    //                 ),
-    //                 Container(
-    //                   width: 400,
-    //                   height: 40,
-    //                   alignment: Alignment.center,
-    //                   child: ElevatedButton.icon(
-    //                     label: const Text(
-    //                       "Get My Location",
-    //                       style: TextStyle(color: Colors.white),
-    //                     ),
-    //                     icon: const Icon(
-    //                       Icons.location_on,
-    //                       color: Colors.white,
-    //                     ),
-    //                     onPressed: () {
-    //                       getCurrentLocation();
-    //                     },
-    //                     style: ElevatedButton.styleFrom(
-    //                       primary: Color.fromARGB(255, 120, 130, 100),
-    //                       shape: RoundedRectangleBorder(
-    //                         borderRadius: BorderRadius.circular(30),
-    //                       ),
-    //                     ),
-    //                   ),
-    //                 ),
-    //               ],
-    //             ),
-    //           ),
-    //           const SizedBox(
-    //             height: 30,
-    //           ),
-    //           ElevatedButton(
-    //             style: ElevatedButton.styleFrom(
-    //                 primary: const Color.fromRGBO(25, 117, 244, 100),
-    //                 padding:
-    //                     const EdgeInsets.symmetric(horizontal: 50, vertical: 20)),
-    //             onPressed: () {
-    //               formValidation();
-    //             },
-    //             child: const Text(
-    //               "Sign Up",
-    //               style: TextStyle(
-    //                 color: Colors.white,
-    //                 fontWeight: FontWeight.bold,
-    //               ),
-    //             ),
-    //           ),
-    //         ],
-    //       ),
-    //     ),
-    //   );
-    // }
     if (!_isVendor) {
       return _buildUser(context);
     } else {
@@ -391,18 +272,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
             );
           });
     }
-
     return true;
   }
 
   /// Check whether the student form has all related forms filled in
   bool _studentFormValidation() {
     return (!_isVendor &&
-        confirmPasswordController.text.isNotEmpty &&
-        emailController.text.isNotEmpty &&
-        nameController.text.isNotEmpty &&
-        lastNameController.text.isNotEmpty &&
-        idController.text.isNotEmpty);
+            studconfirmPasswordController.text.isNotEmpty &&
+            studemailController.text.isNotEmpty &&
+            studnameController
+                .text.isNotEmpty /*&&
+        idController.text.isNotEmpty*/
+        );
   }
 
   /// Check whether the vendor form has all related forms filled in
@@ -451,25 +332,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 children: [
                   CustomTextField(
                     data: Icons.person,
-                    controller: nameController,
+                    controller: studnameController,
                     hintText: "Name",
                     isObscure: false,
                   ),
                   CustomTextField(
                     data: Icons.email,
-                    controller: emailController,
+                    controller: studemailController,
                     hintText: "College Email",
                     isObscure: false,
                   ),
                   CustomTextField(
                     data: Icons.lock,
-                    controller: passwordController,
+                    controller: studpasswordController,
                     hintText: "Password",
                     isObscure: false,
                   ),
                   CustomTextField(
                     data: Icons.lock,
-                    controller: confirmPasswordController,
+                    controller: studconfirmPasswordController,
                     hintText: "Confirm Password",
                     isObscure: false,
                   ),
@@ -631,6 +512,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       const EdgeInsets.symmetric(horizontal: 50, vertical: 20)),
               onPressed: () {
                 registerNewUser();
+                //Navigator.push to HomeScreen
               },
               child: const Text(
                 "Sign Up",

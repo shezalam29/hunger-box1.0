@@ -56,8 +56,12 @@ class FirebaseHandler {
   /// Register a new Student into the database with a hunterId, email, and password.
   /// Then inserts a document containing their information into the [studentUsers]
   /// collection, keyed to the users authentication [uid]
-  Future<bool> registerNewStudent(String email, String psswrd,
-      {String studName = "", String lastName = "", int hunterId = -1}) async {
+  Future<bool> registerNewStudent(
+    String email,
+    String psswrd, {
+    String studName = "",
+    /*int hunterId = -1,*/
+  }) async {
     try {
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: psswrd)
