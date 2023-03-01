@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hunger_box/authentication/auth_screen.dart';
 import 'package:hunger_box/global/global.dart';
 
 class MyDrawer extends StatefulWidget {
@@ -38,10 +39,87 @@ class _MyDrawerState extends State<MyDrawer> {
                 ),
                 Text(
                   sharedPreferences!.getString("vendorName")!,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.orange,
                     fontSize: 20,
                   ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          Container(
+            padding: const EdgeInsets.only(top: 1.0),
+            child: Column(
+              children: [
+                const Divider(height: 10, color: Colors.grey, thickness: 2),
+                ListTile(
+                  leading: const Icon(
+                    Icons.home,
+                    color: Colors.black,
+                  ),
+                  title: const Text(
+                    "Home",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  onTap: () {},
+                ),
+                const Divider(height: 10, color: Colors.grey, thickness: 2),
+                ListTile(
+                  leading: const Icon(
+                    Icons.monetization_on,
+                    color: Colors.black,
+                  ),
+                  title: const Text(
+                    "Earnings",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  onTap: () {},
+                ),
+                const Divider(height: 10, color: Colors.grey, thickness: 2),
+                ListTile(
+                  leading: const Icon(
+                    Icons.reorder,
+                    color: Colors.black,
+                  ),
+                  title: const Text(
+                    "New orders",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  onTap: () {},
+                ),
+                const Divider(height: 10, color: Colors.grey, thickness: 2),
+                ListTile(
+                  leading: const Icon(
+                    Icons.local_shipping,
+                    color: Colors.black,
+                  ),
+                  title: const Text(
+                    "History of Orders",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  onTap: () {},
+                ),
+                const Divider(height: 10, color: Colors.grey, thickness: 2),
+                ListTile(
+                  leading: const Icon(
+                    Icons.exit_to_app,
+                    color: Colors.black,
+                  ),
+                  title: const Text(
+                    "Signout",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  onTap: () {
+                    firebaseAuth.signOut().then((value) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (c) => const AuthScreen()));
+                    });
+                  },
                 ),
               ],
             ),

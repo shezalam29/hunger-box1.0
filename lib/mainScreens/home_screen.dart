@@ -37,20 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       // ignore: prefer_const_constructors
       drawer: MyDrawer(),
-      body: Center(
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            primary: const Color.fromRGBO(25, 117, 244, 100),
-          ),
-          onPressed: () {
-            firebaseAuth.signOut().then((value) {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (c) => const AuthScreen()));
-            });
-          },
-          child: const Text("Logout"),
-        ),
-      ),
+      body: const Center(),
     );
   }
 }
