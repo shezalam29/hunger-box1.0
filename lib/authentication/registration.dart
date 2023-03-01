@@ -109,6 +109,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
     ////////////THISSSSSS PART IS IMPORTANT///////////////
     Route newRoute = MaterialPageRoute(builder: (c) => const HomeScreen());
     Navigator.pushReplacement(context, newRoute);
+
+    sharedPreferences = await SharedPreferences.getInstance();
+    await sharedPreferences!.setString("uid", FBH.currentUser!.uid);
+    await sharedPreferences!
+        .setString("email", FBH.currentUser!.email.toString());
+    await sharedPreferences!
+        .setString("vendorName", nameController.text.trim());
+    await sharedPreferences!.setString("photoUrl", vendorImageUrl);
   }
 
   Future<void> formValidation() async {
