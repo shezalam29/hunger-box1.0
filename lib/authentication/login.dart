@@ -69,6 +69,9 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  // TODO this is a duplicate from registration.dart, find a way to consolidate
+  // into one function.
+  // SharedPreferences Handler?
   Future readDataAndSetDataLocally(User currentUser) async {
     await FirebaseFirestore.instance
         .collection("vendors")

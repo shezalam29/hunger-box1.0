@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as fstorage;
+import 'package:hunger_box/global/fb_constants.dart';
 
 class FirebaseHandler {
   /// Singleton to insure only single user is logged on
@@ -18,6 +19,9 @@ class FirebaseHandler {
 
   /// cached Current User
   late User? currentUser;
+
+  /// Cached path to the avatar image
+  late String avatarUrl;
 
   /// Uses a [FirebaseHandler] factory to initalizes the app and return active
   /// handler
@@ -67,19 +71,19 @@ class FirebaseHandler {
         _psswrd = psswrd;
       });
     } catch (e) {
-      print(e);
       return false;
     }
 
-    print("Inserting new student");
     return await _insertNewUsrInfo(
-        "studentUsers", currentUser!.uid, <String, dynamic>{
-      "currentPoints": 0,
-      "email": email.trim(),
-      "name": studName.trim(),
-      //"userId": hunterId,
-      "studentUID": currentUser!.uid,
-    });
+        STUDENT_CLLCTN,
+        currentUser!.uid,
+        _mapStudentFields(
+          currentPoints: 0,
+          email: email.trim(),
+          firstName: studName.trim(),
+          lastName: lastName.trim(),
+          uid: currentUser!.uid,
+        ));
   }
 
   Future<bool> registerNewVendor(String name, String email, String psswrd,
@@ -94,36 +98,37 @@ class FirebaseHandler {
         _psswrd = psswrd;
       });
     } catch (e) {
-      print(e);
       // TODO throw some kind of error message for failed creation
       return false;
     }
 
     String imgName = DateTime.now().millisecondsSinceEpoch.toString();
-    String imgUrl = await _uploadVendorImage(imgName, imagePath);
+    avatarUrl = await _uploadVendorImage(imgName, imagePath);
 
     String? currUserId = currentUser?.uid;
-    return await _insertNewUsrInfo("vendors", currUserId!, <String, dynamic>{
-      "address": address.trim(),
-      "earnings": 0,
-      "vendorEmail": email.trim(),
-      "vendorAvatarUrl": imgUrl,
-      "lat": lat,
-      "lng": lng,
-      "status": "approved",
-      "vendorName": name.trim(),
-      "vendorUID": currUserId,
-    });
+    return await _insertNewUsrInfo(
+        VENDOR_CLLCTN,
+        currUserId!,
+        _mapVendorFields(
+          address: address.trim(),
+          earnings: 0,
+          vendorEmail: email.trim(),
+          vendorAvatarUrl: avatarUrl,
+          lat: lat,
+          lng: lng,
+          status: "approved",
+          vendorName: name.trim(),
+          vendorUID: currUserId,
+        ));
   }
 
   // ============================ PRIVATE METHODS ============================
 
   /// Get info of the document attached to a [uid]
   Map<String, dynamic>? _getStudentInfo(String uid) {
-    final docRef = FirebaseFirestore.instance.collection("studentUsers");
+    final docRef = FirebaseFirestore.instance.collection(STUDENT_CLLCTN);
     docRef.doc(uid).get().then((value) {
       if (!value.exists) {
-        print("User does not exist");
         return null;
       } else {
         return value.data();
@@ -133,13 +138,9 @@ class FirebaseHandler {
 
   Future<bool> _insertNewUsrInfo(
       String collection, String usrId, Map<String, dynamic> values) async {
-    print("Inserting new user");
     final docRef = FirebaseFirestore.instance.collection(collection);
-    // docRef.doc(usrId).set(values);
     docRef.doc(usrId).get().then((usr) async {
       if (usr.exists) {
-        // This shouldn't occur, but could
-        print("UserID already exists");
         return false;
       } else {
         await usr.reference.set(values);
@@ -149,18 +150,63 @@ class FirebaseHandler {
   }
 
   Future<String> _uploadVendorImage(String imgName, String imgPath) async {
-    // TODO not returning the proper url to the image
     fstorage.Reference reference =
         fstorage.FirebaseStorage.instance.ref().child("vendors").child(imgName);
     fstorage.UploadTask uploadTask = reference.putFile(File(imgPath));
     fstorage.TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
     String url = await taskSnapshot.ref.getDownloadURL();
-    print(url);
     return url;
-    //   await taskSnapshot.ref.getDownloadURL().then((url) {
-    //     return url;
-    //     // save registration information to firestore
-    //   });
-    //   return "FAILURE";
+  }
+
+  /// Map variables to the student fields safely.
+  /// If a field is not provided or does not exist (yet), then it can be set
+  /// to a default value
+  Map<String, dynamic> _mapStudentFields({
+    int currentPoints = 0,
+    String email = "",
+    String firstName = "",
+    String lastName = "",
+    int hunterId = -1,
+    String uid = "",
+  }) {
+    Map<String, dynamic> fields = {
+      STUDENT.POINTS: currentPoints,
+      STUDENT.EMAIL: email,
+      STUDENT.FIRST_NAME: firstName,
+      STUDENT.LAST_NAME: lastName,
+      STUDENT.HUNTERID: hunterId,
+      STUDENT.UID: uid,
+    };
+
+    return fields;
+  }
+
+  /// Map variables to the Vendor fields safely.
+  /// If a field is not provided or does not exist (yet), then it can be set
+  /// to a default value
+  Map<String, dynamic> _mapVendorFields({
+    address = "",
+    earnings = 0,
+    vendorEmail = "",
+    vendorAvatarUrl = "",
+    lat = -1,
+    lng = -1,
+    status = "",
+    vendorName = "",
+    vendorUID = "",
+  }) {
+    Map<String, dynamic> fields = {
+      VENDOR.ADDRESS: address,
+      VENDOR.EARNINGS: earnings,
+      VENDOR.LAT: vendorEmail,
+      VENDOR.LNG: vendorAvatarUrl,
+      VENDOR.STATUS: lat,
+      VENDOR.AVATAR_URL: lng,
+      VENDOR.EMAIL: status,
+      VENDOR.NAME: vendorName,
+      VENDOR.UID: vendorUID,
+    };
+
+    return fields;
   }
 }

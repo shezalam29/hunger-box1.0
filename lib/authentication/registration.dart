@@ -70,6 +70,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         '${pMark.subThoroughfare} ${pMark.thoroughfare}, ${pMark.subLocality} ${pMark.locality}, ${pMark.subAdministrativeArea}, ${pMark.administrativeArea} ${pMark.postalCode}, ${pMark.country}';
     locationController.text = completeAddress;
   }
+  // getCurrentLocation
 
   Future<void> registerNewUser() async {
     if (!_isRegistrationFormValid()) {
@@ -100,25 +101,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
         passwordController.text,
         studName: nameController.text,
         lastName: lastNameController.text,
-        //hunterId: int.parse(idController.text),
+        hunterId: int.parse(idController.text),
       );
     }
 
-    Navigator.pop(context);
-    //send the user to home page
-    ////////////THISSSSSS PART IS IMPORTANT///////////////
-    Route newRoute = MaterialPageRoute(builder: (c) => const HomeScreen());
-    Navigator.pushReplacement(context, newRoute);
-
+    // Save Data Locally
     sharedPreferences = await SharedPreferences.getInstance();
     await sharedPreferences!.setString("uid", FBH.currentUser!.uid);
     await sharedPreferences!
         .setString("email", FBH.currentUser!.email.toString());
-    await sharedPreferences!
-        .setString("vendorName", nameController.text.trim());
-    await sharedPreferences!.setString("photoUrl", vendorImageUrl);
-  }
+    await sharedPreferences!.setString("name", nameController.text.trim());
+    await sharedPreferences!.setString("photoUrl", FBH.avatarUrl);
 
+    Navigator.pop(context);
+    //send the user to home page
+    ////////////THISSSSSS PART IS IMPORTANT///////////////
+    // TODO need to reroute based on who is signing in
+    Route newRoute = MaterialPageRoute(builder: (c) => const HomeScreen());
+    Navigator.pushReplacement(context, newRoute);
+  }
+  // registerNewUser
+
+  @Deprecated('Used in tutorial, outdated version')
   Future<void> formValidation() async {
     if (imageXFile == null) {
       showDialog(
@@ -178,6 +182,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
+  @Deprecated('Used in tutorial, outdated version')
   void authenticateSellerAndSignUp() async {
     User? currentUser;
 
@@ -210,6 +215,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
+  @Deprecated('Used in tutorial, outdated version')
   Future saveDataToFirestore(User currentUser) async {
     FirebaseFirestore.instance.collection("vendors").doc(currentUser.uid).set({
       "vendorUID": currentUser.uid,
@@ -359,6 +365,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
+  // ==============================PRIVATE METHODS==============================
+
   /// Test whether registration forms have the appropriate forms filled in based
   /// on which user is registering as a vendor or a user
   bool _isRegistrationFormValid() {
@@ -414,6 +422,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         locationController.text.isNotEmpty);
   }
 
+  /// Build the user registration page
   Widget _buildUser(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
@@ -662,4 +671,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
     );
   }
+
+  
 }
