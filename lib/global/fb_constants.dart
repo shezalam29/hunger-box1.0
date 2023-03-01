@@ -1,27 +1,27 @@
 /// File containing
-const String VENDOR_CLLCTN = "vendors";
+const String vendor_cllctn = "vendors";
 
-class VENDOR {
-  static const String ADDRESS = "address";
-  static const String EARNINGS = "earnings";
-  static const String LAT = "lat";
-  static const String LNG = "lng";
-  static const String STATUS = "status";
-  static const String AVATAR_URL = "vendorAvatarUrl";
-  static const String EMAIL = "email";
-  static const String NAME = "name";
-  static const String UID = "vendorUID";
+class VendorDoc {
+  static const String address = "address";
+  static const String earnings = "earnings";
+  static const String lat = "lat";
+  static const String lng = "lng";
+  static const String status = "status";
+  static const String avatarUrl = "vendorAvatarUrl";
+  static const String email = "email";
+  static const String name = "name";
+  static const String uid = "vendorUID";
 }
 
-const String STUDENT_CLLCTN = "students";
+const String student_cllctn = "students";
 
-class STUDENT {
-  static const String POINTS = "currentPoints";
-  static const String EMAIL = "email";
-  static const String FIRST_NAME = "name";
-  static const String AVATAR_URL = "studentAvatarUrl";
+class StudentDoc {
+  static const String points = "currentPoints";
+  static const String email = "email";
+  static const String name = "name";
+  static const String avatarUrl = "studentAvatarUrl";
 
   /// Not yet implemented
   // static const String HUNTERID = "hunterId";
-  static const String UID = "studentUID";
+  static const String uid = "studentUID";
 }

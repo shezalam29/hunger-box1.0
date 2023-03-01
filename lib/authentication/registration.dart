@@ -118,12 +118,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
+    String name = _isVendor ? studNameController.text : vendNameController.text;
     sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences!.setString("uid", FBH.currentUser!.uid);
+    await sharedPreferences!.setString(PREFERENCES.UID, FBH.currentUser!.uid);
     await sharedPreferences!
-        .setString("email", FBH.currentUser!.email.toString());
-    await sharedPreferences!.setString("name", vendNameController.text.trim());
-    await sharedPreferences!.setString("photoUrl", vendorImageUrl);
+        .setString(PREFERENCES.EMAIL, FBH.currentUser!.email.toString());
+    await sharedPreferences!.setString(PREFERENCES.NAME, name);
+    await sharedPreferences!.setString("photoUrl", FBH.avatarUrl);
 
     // Dismiss registering pop up
     Navigator.pop(context);

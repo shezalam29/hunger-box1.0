@@ -34,7 +34,7 @@ class _MyDrawerState extends State<MyDrawer> {
                   height: 10,
                 ),
                 Text(
-                  sharedPreferences!.getString('name')!,
+                  sharedPreferences!.getString(PREFERENCES.NAME)!,
                   style: const TextStyle(
                     color: Colors.orange,
                     fontSize: 20,

@@ -43,6 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
         });
 
     User? currentUser;
+
     await firebaseAuth
         .signInWithEmailAndPassword(
       email: emailController.text.trim(),
@@ -60,6 +61,9 @@ class _LoginScreenState extends State<LoginScreen> {
             );
           });
     });
+
+    await FBH.isVendor(currentUser!);
+
     if (currentUser != null) {
       readDataAndSetDataLocally(currentUser!).then((value) {
         Navigator.pop(context);
@@ -72,6 +76,8 @@ class _LoginScreenState extends State<LoginScreen> {
   // TODO this is a duplicate from registration.dart, find a way to consolidate
   // into one function.
   // SharedPreferences Handler?
+  // TODO inconsistent fields to the firebase
+  // TODO needs to check who the user is
   Future readDataAndSetDataLocally(User currentUser) async {
     await FirebaseFirestore.instance
         .collection("vendors")

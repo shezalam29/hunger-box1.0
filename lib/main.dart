@@ -15,6 +15,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   sharedPreferences = await SharedPreferences.getInstance();
   FBH = await FirebaseHandler.create();
+  // TODO Firebase is taking your cached sharedPreferences and trying to log you in, causing potential errors
   firebaseAuth.signOut();
   runApp(const MyApp());
 }

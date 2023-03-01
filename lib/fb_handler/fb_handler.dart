@@ -62,10 +62,10 @@ class FirebaseHandler {
     });
 
     String imgName = DateTime.now().millisecondsSinceEpoch.toString();
-    avatarUrl = await _uploadAvatarImage(imgName, imgPath, STUDENT_CLLCTN);
+    avatarUrl = await _uploadAvatarImage(imgName, imgPath, student_cllctn);
 
     await _insertNewUsrInfo(
-        STUDENT_CLLCTN,
+        student_cllctn,
         currentUser!.uid,
         _mapStudentFields(
           currentPoints: 0,
@@ -76,6 +76,7 @@ class FirebaseHandler {
         ));
   }
 
+  /// Register a new Vendor into the database
   Future registerNewVendor(String name, String email, String psswrd,
       String address, String imagePath, double lat, double lng) async {
     final fbhInst = FirebaseAuth.instance;
@@ -87,12 +88,12 @@ class FirebaseHandler {
     });
 
     String imgName = DateTime.now().millisecondsSinceEpoch.toString();
-    avatarUrl = await _uploadAvatarImage(imgName, imagePath, VENDOR_CLLCTN);
+    avatarUrl = await _uploadAvatarImage(imgName, imagePath, vendor_cllctn);
 
     String? currUserId = currentUser?.uid;
 
     await _insertNewUsrInfo(
-        VENDOR_CLLCTN,
+        vendor_cllctn,
         currUserId!,
         _mapVendorFields(
           address: address.trim(),
@@ -107,11 +108,21 @@ class FirebaseHandler {
         ));
   }
 
+  /// Check whether provided [usr] is a Vendor by checking if they exist within
+  /// the Vendor Collection
+  Future<bool> isVendor(User usr) async {
+    final docRef = FirebaseFirestore.instance.collection(vendor_cllctn);
+
+    return docRef.doc(usr.uid).get().then((usr) {
+      return usr.exists;
+    });
+  }
+
   // ============================ PRIVATE METHODS ============================
 
   /// Get info of the document attached to a [uid]
   Map<String, dynamic>? _getStudentInfo(String uid) {
-    final docRef = FirebaseFirestore.instance.collection(STUDENT_CLLCTN);
+    final docRef = FirebaseFirestore.instance.collection(student_cllctn);
     docRef.doc(uid).get().then((value) {
       if (!value.exists) {
         return null;
@@ -161,11 +172,11 @@ class FirebaseHandler {
     String uid = "NOTSET",
   }) {
     Map<String, dynamic> fields = {
-      STUDENT.POINTS: currentPoints,
-      STUDENT.EMAIL: email,
-      STUDENT.FIRST_NAME: firstName,
-      STUDENT.AVATAR_URL: avatarUrl,
-      STUDENT.UID: uid,
+      StudentDoc.points: currentPoints,
+      StudentDoc.email: email,
+      StudentDoc.name: firstName,
+      StudentDoc.avatarUrl: avatarUrl,
+      StudentDoc.uid: uid,
       // STUDENT.HUNTERID: hunterId, // IMPLEMENT LATER
     };
 
@@ -187,15 +198,15 @@ class FirebaseHandler {
     vendorUID = "",
   }) {
     Map<String, dynamic> fields = {
-      VENDOR.ADDRESS: address,
-      VENDOR.EARNINGS: earnings,
-      VENDOR.LAT: vendorEmail,
-      VENDOR.LNG: vendorAvatarUrl,
-      VENDOR.STATUS: lat,
-      VENDOR.AVATAR_URL: lng,
-      VENDOR.EMAIL: status,
-      VENDOR.NAME: vendorName,
-      VENDOR.UID: vendorUID,
+      VendorDoc.address: address,
+      VendorDoc.earnings: earnings,
+      VendorDoc.lat: vendorEmail,
+      VendorDoc.lng: vendorAvatarUrl,
+      VendorDoc.status: lat,
+      VendorDoc.avatarUrl: lng,
+      VendorDoc.email: status,
+      VendorDoc.name: vendorName,
+      VendorDoc.uid: vendorUID,
     };
 
     return fields;
