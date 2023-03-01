@@ -15,7 +15,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   sharedPreferences = await SharedPreferences.getInstance();
   FBH = await FirebaseHandler.create();
-  await Firebase.initializeApp();
+  firebaseAuth.signOut();
   runApp(const MyApp());
 }
 

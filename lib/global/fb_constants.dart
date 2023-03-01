@@ -8,8 +8,8 @@ class VENDOR {
   static const String LNG = "lng";
   static const String STATUS = "status";
   static const String AVATAR_URL = "vendorAvatarUrl";
-  static const String EMAIL = "vendorEmail";
-  static const String NAME = "vendorName";
+  static const String EMAIL = "email";
+  static const String NAME = "name";
   static const String UID = "vendorUID";
 }
 
@@ -17,9 +17,11 @@ const String STUDENT_CLLCTN = "students";
 
 class STUDENT {
   static const String POINTS = "currentPoints";
-  static const String EMAIL = "studentEmail";
-  static const String FIRST_NAME = "firstName";
-  static const String LAST_NAME = "lastName";
-  static const String HUNTERID = "hunterId";
+  static const String EMAIL = "email";
+  static const String FIRST_NAME = "name";
+  static const String AVATAR_URL = "studentAvatarUrl";
+
+  /// Not yet implemented
+  // static const String HUNTERID = "hunterId";
   static const String UID = "studentUID";
 }

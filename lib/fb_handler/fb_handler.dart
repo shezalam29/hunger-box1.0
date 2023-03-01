@@ -11,11 +11,8 @@ class FirebaseHandler {
   /// Singleton to insure only single user is logged on
   static final FirebaseHandler _self = FirebaseHandler._();
 
-  /// Cached local user name
-  late final String _usrName;
-
   /// Cached local password
-  late final String _psswrd;
+  late String _psswrd;
 
   /// cached Current User
   late User? currentUser;
@@ -34,17 +31,12 @@ class FirebaseHandler {
 
   /// Log in to Firebase with [usrName] and [psswrd].
   Future login(String usrName, String psswrd) async {
-    try {
-      await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: usrName, password: psswrd)
-          .then((usrCred) {
-        currentUser = usrCred.user;
-        _usrName = usrName;
-        _psswrd = psswrd;
-      });
-    } catch (e) {
-      // TODO throw some kind of error message for failed sign in
-    }
+    await FirebaseAuth.instance
+        .signInWithEmailAndPassword(email: usrName, password: psswrd)
+        .then((usrCred) {
+      currentUser = usrCred.user;
+      _psswrd = psswrd;
+    });
   }
 
   /// Gets the current logged in user's info
@@ -60,53 +52,46 @@ class FirebaseHandler {
   /// Register a new Student into the database with a hunterId, email, and password.
   /// Then inserts a document containing their information into the [studentUsers]
   /// collection, keyed to the users authentication [uid]
-  Future<bool> registerNewStudent(String email, String psswrd,
-      {String studName = "", String lastName = "", int hunterId = -1}) async {
-    try {
-      await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: psswrd)
-          .then((usrCred) {
-        currentUser = usrCred.user;
-        _usrName = email;
-        _psswrd = psswrd;
-      });
-    } catch (e) {
-      return false;
-    }
+  Future registerNewStudent(
+      String email, String psswrd, String studName, String imgPath) async {
+    await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(email: email, password: psswrd)
+        .then((usrCred) {
+      currentUser = usrCred.user;
+      _psswrd = psswrd;
+    });
 
-    return await _insertNewUsrInfo(
+    String imgName = DateTime.now().millisecondsSinceEpoch.toString();
+    avatarUrl = await _uploadAvatarImage(imgName, imgPath, STUDENT_CLLCTN);
+
+    await _insertNewUsrInfo(
         STUDENT_CLLCTN,
         currentUser!.uid,
         _mapStudentFields(
           currentPoints: 0,
           email: email.trim(),
           firstName: studName.trim(),
-          lastName: lastName.trim(),
           uid: currentUser!.uid,
+          avatarUrl: avatarUrl,
         ));
   }
 
-  Future<bool> registerNewVendor(String name, String email, String psswrd,
+  Future registerNewVendor(String name, String email, String psswrd,
       String address, String imagePath, double lat, double lng) async {
     final fbhInst = FirebaseAuth.instance;
-    try {
-      await fbhInst
-          .createUserWithEmailAndPassword(email: email, password: psswrd)
-          .then((usrCred) {
-        currentUser = usrCred.user;
-        _usrName = email;
-        _psswrd = psswrd;
-      });
-    } catch (e) {
-      // TODO throw some kind of error message for failed creation
-      return false;
-    }
+    await fbhInst
+        .createUserWithEmailAndPassword(email: email, password: psswrd)
+        .then((usrCred) {
+      currentUser = usrCred.user;
+      _psswrd = psswrd;
+    });
 
     String imgName = DateTime.now().millisecondsSinceEpoch.toString();
-    avatarUrl = await _uploadVendorImage(imgName, imagePath);
+    avatarUrl = await _uploadAvatarImage(imgName, imagePath, VENDOR_CLLCTN);
 
     String? currUserId = currentUser?.uid;
-    return await _insertNewUsrInfo(
+
+    await _insertNewUsrInfo(
         VENDOR_CLLCTN,
         currUserId!,
         _mapVendorFields(
@@ -136,10 +121,11 @@ class FirebaseHandler {
     });
   }
 
+  /// Insert a New user into a [collection] with a key of [key] and [values]
   Future<bool> _insertNewUsrInfo(
-      String collection, String usrId, Map<String, dynamic> values) async {
+      String collection, String key, Map<String, dynamic> values) async {
     final docRef = FirebaseFirestore.instance.collection(collection);
-    docRef.doc(usrId).get().then((usr) async {
+    docRef.doc(key).get().then((usr) async {
       if (usr.exists) {
         return false;
       } else {
@@ -149,9 +135,14 @@ class FirebaseHandler {
     return true;
   }
 
-  Future<String> _uploadVendorImage(String imgName, String imgPath) async {
-    fstorage.Reference reference =
-        fstorage.FirebaseStorage.instance.ref().child("vendors").child(imgName);
+  /// Upload an avatar image into [fstorage] and return the resulting path
+  Future<String> _uploadAvatarImage(
+      String imgName, String imgPath, String collection) async {
+    fstorage.Reference reference = fstorage.FirebaseStorage.instance
+        .ref()
+        .child(collection)
+        .child(imgName);
+
     fstorage.UploadTask uploadTask = reference.putFile(File(imgPath));
     fstorage.TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
     String url = await taskSnapshot.ref.getDownloadURL();
@@ -165,17 +156,17 @@ class FirebaseHandler {
     int currentPoints = 0,
     String email = "",
     String firstName = "",
-    String lastName = "",
+    String avatarUrl = "not found",
     int hunterId = -1,
-    String uid = "",
+    String uid = "NOTSET",
   }) {
     Map<String, dynamic> fields = {
       STUDENT.POINTS: currentPoints,
       STUDENT.EMAIL: email,
       STUDENT.FIRST_NAME: firstName,
-      STUDENT.LAST_NAME: lastName,
-      STUDENT.HUNTERID: hunterId,
+      STUDENT.AVATAR_URL: avatarUrl,
       STUDENT.UID: uid,
+      // STUDENT.HUNTERID: hunterId, // IMPLEMENT LATER
     };
 
     return fields;

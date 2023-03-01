@@ -25,17 +25,25 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController lastNameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmPasswordController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController idController = TextEditingController();
-  TextEditingController confirmEmailController = TextEditingController();
-  TextEditingController locationController = TextEditingController();
+  //Vendor TextEditingControllers
+  TextEditingController vendNameController = TextEditingController();
+  TextEditingController vendPasswordController = TextEditingController();
+  TextEditingController vendConfirmPasswordController = TextEditingController();
+  TextEditingController vendEmailController = TextEditingController();
+  TextEditingController vendConfirmEmailController = TextEditingController();
+  TextEditingController vendLocationController = TextEditingController();
+  //Student TextEditingControllers
+  TextEditingController studNameController = TextEditingController();
+  TextEditingController studPasswordController = TextEditingController();
+  TextEditingController studConfirmPasswordController = TextEditingController();
+  TextEditingController studEmailController = TextEditingController();
+  TextEditingController studConfirmEmailController = TextEditingController();
+  // TextEditingController studidController = TextEditingController(); // not yet implemented
+
   bool _isVendor = false;
 
-  XFile? imageXFile;
+  XFile? vendImageXFile;
+  XFile? studImageXFile;
   final ImagePicker _picker = ImagePicker();
 
   Position? position;
@@ -44,11 +52,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String vendorImageUrl = "";
   String completeAddress = "";
 
-  Future<void> _getImage() async {
-    imageXFile = await _picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      imageXFile;
-    });
+  /// Get an image from a picker and return it
+  Future<XFile?> _getImage() async {
+    return await _picker.pickImage(source: ImageSource.gallery);
   }
 
   getCurrentLocation() async {
@@ -68,10 +74,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
     Placemark pMark = placeMarks![0];
     completeAddress =
         '${pMark.subThoroughfare} ${pMark.thoroughfare}, ${pMark.subLocality} ${pMark.locality}, ${pMark.subAdministrativeArea}, ${pMark.administrativeArea} ${pMark.postalCode}, ${pMark.country}';
-    locationController.text = completeAddress;
+    vendLocationController.text = completeAddress;
   }
   // getCurrentLocation
 
+  /// Register and Authenticate a new user into the Firebase database
+  // TODO Instead of one big function, maybe have each Sign up button call a different function
   Future<void> registerNewUser() async {
     if (!_isRegistrationFormValid()) {
       return;
@@ -85,46 +93,52 @@ class _RegisterScreenState extends State<RegisterScreen> {
           );
         });
 
-    if (_isVendor) {
-      await FBH.registerNewVendor(
-        nameController.text,
-        emailController.text,
-        passwordController.text,
-        locationController.text,
-        imageXFile!.path.trim(),
-        position!.latitude,
-        position!.longitude,
-      );
-    } else {
-      await FBH.registerNewStudent(
-        emailController.text.trim(),
-        passwordController.text,
-        studName: nameController.text,
-        lastName: lastNameController.text,
-        hunterId: int.parse(idController.text),
-      );
+    try {
+      if (_isVendor) {
+        await FBH.registerNewVendor(
+            vendNameController.text,
+            vendEmailController.text,
+            vendPasswordController.text,
+            vendLocationController.text,
+            vendImageXFile!.path.trim(),
+            position!.latitude,
+            position!.longitude);
+      } else {
+        await FBH.registerNewStudent(
+            studEmailController.text.trim(),
+            studPasswordController.text,
+            studNameController.text,
+            studImageXFile!.path.trim()
+            //,hunterId: int.parse(idController.text)
+            );
+      }
+    } on FirebaseException catch (e) {
+      Navigator.pop(context, true);
+      _fbErrorHandler(e);
+      return;
     }
 
-    // Save Data Locally
     sharedPreferences = await SharedPreferences.getInstance();
     await sharedPreferences!.setString("uid", FBH.currentUser!.uid);
     await sharedPreferences!
         .setString("email", FBH.currentUser!.email.toString());
-    await sharedPreferences!.setString("name", nameController.text.trim());
-    await sharedPreferences!.setString("photoUrl", FBH.avatarUrl);
+    await sharedPreferences!.setString("name", vendNameController.text.trim());
+    await sharedPreferences!.setString("photoUrl", vendorImageUrl);
 
+    // Dismiss registering pop up
     Navigator.pop(context);
-    //send the user to home page
-    ////////////THISSSSSS PART IS IMPORTANT///////////////
-    // TODO need to reroute based on who is signing in
-    Route newRoute = MaterialPageRoute(builder: (c) => const HomeScreen());
-    Navigator.pushReplacement(context, newRoute);
   }
   // registerNewUser
 
+  //   Navigator.pop(context);
+  //   //send the user to home page
+  //   ////////////THISSSSSS PART IS IMPORTANT///////////////
+  //   Route newRoute = MaterialPageRoute(builder: (c) => const HomeScreen());
+  //   Navigator.pushReplacement(context, newRoute);
+
   @Deprecated('Used in tutorial, outdated version')
   Future<void> formValidation() async {
-    if (imageXFile == null) {
+    if (vendImageXFile == null) {
       showDialog(
           context: context,
           builder: (c) {
@@ -133,13 +147,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
             );
           });
     } else {
-      if (passwordController.text == confirmPasswordController.text) {
-        if (confirmPasswordController.text.isNotEmpty &&
-            emailController.text.isNotEmpty &&
-            nameController.text.isNotEmpty &&
-            locationController.text.isNotEmpty) {
-          // upload image to firestore
-
+      if (vendPasswordController.text == vendConfirmPasswordController.text) {
+        if (vendConfirmPasswordController.text.isNotEmpty &&
+            vendEmailController.text.isNotEmpty &&
+            vendNameController.text.isNotEmpty &&
+            vendLocationController.text.isNotEmpty) {
           showDialog(
               context: context,
               builder: (c) {
@@ -153,7 +165,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               .child("vendors")
               .child(fileName);
           fstorage.UploadTask uploadTask =
-              reference.putFile(File(imageXFile!.path));
+              reference.putFile(File(vendImageXFile!.path));
           fstorage.TaskSnapshot taskSnapshot =
               await uploadTask.whenComplete(() {});
           await taskSnapshot.ref.getDownloadURL().then((url) {
@@ -188,8 +200,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     await firebaseAuth
         .createUserWithEmailAndPassword(
-      email: emailController.text.trim(),
-      password: passwordController.text.trim(),
+      email: vendEmailController.text.trim(),
+      password: vendPasswordController.text.trim(),
     )
         .then((auth) {
       currentUser = auth.user;
@@ -220,7 +232,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     FirebaseFirestore.instance.collection("vendors").doc(currentUser.uid).set({
       "vendorUID": currentUser.uid,
       "vendorEmail": currentUser.email,
-      "vendorName": nameController.text.trim(),
+      "vendorName": vendNameController.text.trim(),
       "vendorAvatarUrl": vendorImageUrl,
       "address": completeAddress,
       "status": "approved",
@@ -233,133 +245,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
     sharedPreferences = await SharedPreferences.getInstance();
     await sharedPreferences!.setString("uid", currentUser.uid);
     await sharedPreferences!.setString("email", currentUser.email.toString());
-    await sharedPreferences!.setString("name", nameController.text.trim());
+    await sharedPreferences!.setString("name", vendNameController.text.trim());
     await sharedPreferences!.setString("photoUrl", vendorImageUrl);
   }
 
   @override
   Widget build(BuildContext context) {
-    //   return SingleChildScrollView(
-    //     child: Container(
-    //       child: Column(
-    //         mainAxisSize: MainAxisSize.max,
-    //         children: [
-    //           const SizedBox(
-    //             height: 10,
-    //           ),
-    //           InkWell(
-    //             onTap: () {
-    //               _getImage();
-    //             },
-    //             child: CircleAvatar(
-    //               radius: MediaQuery.of(context).size.width * .2,
-    //               backgroundColor: Colors.white,
-    //               backgroundImage: imageXFile == null
-    //                   ? null
-    //                   : FileImage(File(imageXFile!.path)),
-    //               child: imageXFile == null
-    //                   ? Icon(
-    //                       Icons.add_photo_alternate,
-    //                       size: MediaQuery.of(context).size.width * .2,
-    //                       color: Colors.blueGrey,
-    //                     )
-    //                   : null,
-    //             ),
-    //           ),
-    //           const SizedBox(
-    //             height: 3,
-    //           ),
-    //           Form(
-    //             key: _formKey,
-    //             child: Column(
-    //               children: [
-    //                 CustomTextField(
-    //                   data: Icons.person,
-    //                   controller: nameController,
-    //                   hintText: "Name",
-    //                   isObscure: false,
-    //                 ),
-    //                 CustomTextField(
-    //                   data: Icons.lock,
-    //                   controller: passwordController,
-    //                   hintText: "Password",
-    //                   isObscure: false,
-    //                 ),
-    //                 CustomTextField(
-    //                   data: Icons.lock,
-    //                   controller: confirmPasswordController,
-    //                   hintText: "Confirm Password",
-    //                   isObscure: false,
-    //                 ),
-    //                 CustomTextField(
-    //                   data: Icons.email,
-    //                   controller: emailController,
-    //                   hintText: "Email",
-    //                   isObscure: false,
-    //                 ),
-    //                 CustomTextField(
-    //                   data: Icons.my_location,
-    //                   controller: locationController,
-    //                   hintText: "Address",
-    //                   isObscure: false,
-    //                   enabled: true,
-    //                 ),
-    //                 const SizedBox(
-    //                   height: 15,
-    //                 ),
-    //                 Container(
-    //                   width: 400,
-    //                   height: 40,
-    //                   alignment: Alignment.center,
-    //                   child: ElevatedButton.icon(
-    //                     label: const Text(
-    //                       "Get My Location",
-    //                       style: TextStyle(color: Colors.white),
-    //                     ),
-    //                     icon: const Icon(
-    //                       Icons.location_on,
-    //                       color: Colors.white,
-    //                     ),
-    //                     onPressed: () {
-    //                       getCurrentLocation();
-    //                     },
-    //                     style: ElevatedButton.styleFrom(
-    //                       primary: Color.fromARGB(255, 120, 130, 100),
-    //                       shape: RoundedRectangleBorder(
-    //                         borderRadius: BorderRadius.circular(30),
-    //                       ),
-    //                     ),
-    //                   ),
-    //                 ),
-    //               ],
-    //             ),
-    //           ),
-    //           const SizedBox(
-    //             height: 30,
-    //           ),
-    //           ElevatedButton(
-    //             style: ElevatedButton.styleFrom(
-    //                 primary: const Color.fromRGBO(25, 117, 244, 100),
-    //                 padding:
-    //                     const EdgeInsets.symmetric(horizontal: 50, vertical: 20)),
-    //             onPressed: () {
-    //               formValidation();
-    //             },
-    //             child: const Text(
-    //               "Sign Up",
-    //               style: TextStyle(
-    //                 color: Colors.white,
-    //                 fontWeight: FontWeight.bold,
-    //               ),
-    //             ),
-    //           ),
-    //         ],
-    //       ),
-    //     ),
-    //   );
-    // }
     if (!_isVendor) {
-      return _buildUser(context);
+      return _buildStudent(context);
     } else {
       return _buildVendor(context);
     }
@@ -368,9 +261,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
   // ==============================PRIVATE METHODS==============================
 
   /// Test whether registration forms have the appropriate forms filled in based
-  /// on which user is registering as a vendor or a user
+  /// on which user is registering as a vendor or a user. First does test
   bool _isRegistrationFormValid() {
-    if (imageXFile == null && _isVendor) {
+    XFile? img;
+    late Function passwordsEqual;
+    late Function formChecker;
+
+    // Set what variables to check so that we can call dialog boxes only once
+    if (_isVendor) {
+      img = vendImageXFile;
+      passwordsEqual = () {
+        return vendPasswordController.text !=
+            vendConfirmPasswordController.text;
+      };
+      formChecker = _vendorFormValidation;
+    } else {
+      img = studImageXFile;
+      passwordsEqual = () {
+        return studPasswordController.text !=
+            studConfirmPasswordController.text;
+      };
+      formChecker = _studentFormValidation;
+    }
+
+    if (img == null) {
       showDialog(
           context: context,
           builder: (c) {
@@ -381,7 +295,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return false;
     }
 
-    if (passwordController.text != confirmPasswordController.text) {
+    if (passwordsEqual()) {
       showDialog(
           context: context,
           builder: (c) {
@@ -390,7 +304,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
             );
           });
       return false;
-    } else if (!_studentFormValidation() && !_vendorFormValidation()) {
+    }
+
+    if (!formChecker()) {
       showDialog(
           context: context,
           builder: (c) {
@@ -398,6 +314,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               message: "One or more fields is incomplete.",
             );
           });
+      return false;
     }
 
     return true;
@@ -405,25 +322,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   /// Check whether the student form has all related forms filled in
   bool _studentFormValidation() {
-    return (!_isVendor &&
-        confirmPasswordController.text.isNotEmpty &&
-        emailController.text.isNotEmpty &&
-        nameController.text.isNotEmpty &&
-        lastNameController.text.isNotEmpty &&
-        idController.text.isNotEmpty);
+    return (studConfirmPasswordController.text.isNotEmpty &&
+            studEmailController.text.isNotEmpty &&
+            studNameController.text.isNotEmpty
+        /*&& idController.text.isNotEmpty*/
+        );
   }
 
   /// Check whether the vendor form has all related forms filled in
   bool _vendorFormValidation() {
     return (_isVendor &&
-        confirmPasswordController.text.isNotEmpty &&
-        emailController.text.isNotEmpty &&
-        nameController.text.isNotEmpty &&
-        locationController.text.isNotEmpty);
+        vendConfirmPasswordController.text.isNotEmpty &&
+        vendEmailController.text.isNotEmpty &&
+        vendNameController.text.isNotEmpty &&
+        vendLocationController.text.isNotEmpty);
   }
 
   /// Build the user registration page
-  Widget _buildUser(BuildContext context) {
+  Widget _buildStudent(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
         child: Column(
@@ -433,16 +349,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
               height: 10,
             ),
             InkWell(
-              onTap: () {
-                _getImage();
+              onTap: () async {
+                studImageXFile = await _getImage();
+                setState(() {
+                  studImageXFile;
+                });
               },
               child: CircleAvatar(
                 radius: MediaQuery.of(context).size.width * .2,
                 backgroundColor: Colors.white,
-                backgroundImage: imageXFile == null
+                backgroundImage: studImageXFile == null
                     ? null
-                    : FileImage(File(imageXFile!.path)),
-                child: imageXFile == null
+                    : FileImage(File(studImageXFile!.path)),
+                child: studImageXFile == null
                     ? Icon(
                         Icons.add_photo_alternate,
                         size: MediaQuery.of(context).size.width * .2,
@@ -460,25 +379,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 children: [
                   CustomTextField(
                     data: Icons.person,
-                    controller: nameController,
+                    controller: studNameController,
                     hintText: "Name",
                     isObscure: false,
                   ),
                   CustomTextField(
                     data: Icons.email,
-                    controller: emailController,
+                    controller: studEmailController,
                     hintText: "College Email",
                     isObscure: false,
                   ),
                   CustomTextField(
                     data: Icons.lock,
-                    controller: passwordController,
+                    controller: studPasswordController,
                     hintText: "Password",
                     isObscure: false,
                   ),
                   CustomTextField(
                     data: Icons.lock,
-                    controller: confirmPasswordController,
+                    controller: studConfirmPasswordController,
                     hintText: "Confirm Password",
                     isObscure: false,
                   ),
@@ -544,16 +463,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
               height: 10,
             ),
             InkWell(
-              onTap: () {
-                _getImage();
+              onTap: () async {
+                vendImageXFile = await _getImage();
+                setState(() {
+                  vendImageXFile;
+                });
               },
               child: CircleAvatar(
                 radius: MediaQuery.of(context).size.width * .2,
                 backgroundColor: Colors.white,
-                backgroundImage: imageXFile == null
+                backgroundImage: vendImageXFile == null
                     ? null
-                    : FileImage(File(imageXFile!.path)),
-                child: imageXFile == null
+                    : FileImage(File(vendImageXFile!.path)),
+                child: vendImageXFile == null
                     ? Icon(
                         Icons.add_photo_alternate,
                         size: MediaQuery.of(context).size.width * .2,
@@ -571,31 +493,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 children: [
                   CustomTextField(
                     data: Icons.person,
-                    controller: nameController,
+                    controller: vendNameController,
                     hintText: "Name",
                     isObscure: false,
                   ),
                   CustomTextField(
                     data: Icons.email,
-                    controller: emailController,
+                    controller: vendEmailController,
                     hintText: "Email",
                     isObscure: false,
                   ),
                   CustomTextField(
                     data: Icons.lock,
-                    controller: passwordController,
+                    controller: vendPasswordController,
                     hintText: "Password",
                     isObscure: false,
                   ),
                   CustomTextField(
                     data: Icons.lock,
-                    controller: confirmPasswordController,
+                    controller: vendConfirmPasswordController,
                     hintText: "Confirm Password",
                     isObscure: false,
                   ),
                   CustomTextField(
                     data: Icons.my_location,
-                    controller: locationController,
+                    controller: vendLocationController,
                     hintText: "Address",
                     isObscure: false,
                     enabled: true,
@@ -640,6 +562,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       const EdgeInsets.symmetric(horizontal: 50, vertical: 20)),
               onPressed: () {
                 registerNewUser();
+                //Navigator.push to HomeScreen
               },
               child: const Text(
                 "Sign Up",
@@ -672,5 +595,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  
+  /// Output a [Dialog] box containing a FirebaseException to the screen
+  void _fbErrorHandler(FirebaseException e) {
+    String errorMsg = e.toString();
+    errorMsg = errorMsg.split("] ")[1];
+    showDialog(
+        context: context,
+        builder: (c) {
+          return ErrorDialog(
+            message: errorMsg,
+          );
+        });
+  }
 }
