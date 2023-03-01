@@ -57,6 +57,162 @@ class _RegisterScreenState extends State<RegisterScreen> {
     locationController.text = completeAddress;
   }
 
+<<<<<<< Updated upstream
+=======
+  Future<void> registerNewUser() async {
+    if (!_isRegistrationFormValid()) {
+      return;
+    }
+
+    showDialog(
+        context: context,
+        builder: (c) {
+          return LoadingDialog(
+            message: "Registering",
+          );
+        });
+
+    if (_isVendor) {
+      await FBH.registerNewVendor(
+        nameController.text,
+        emailController.text,
+        passwordController.text,
+        locationController.text,
+        imageXFile!.path.trim(),
+        position!.latitude,
+        position!.longitude,
+      );
+    } else {
+      await FBH.registerNewStudent(
+        emailController.text.trim(),
+        passwordController.text,
+        firstName: nameController.text,
+        lastName: lastNameController.text,
+        hunterId: int.parse(idController.text),
+      );
+    }
+
+    Navigator.pop(context);
+    //send the user to home page
+    ////////////THISSSSSS PART IS IMPORTANT///////////////
+    Route newRoute = MaterialPageRoute(builder: (c) => const HomeScreen());
+    Navigator.pushReplacement(context, newRoute);
+  }
+
+  Future<void> formValidation() async {
+    if (imageXFile == null) {
+      showDialog(
+          context: context,
+          builder: (c) {
+            return ErrorDialog(
+              message: "Please choose an image.",
+            );
+          });
+    } else {
+      if (passwordController.text == confirmPasswordController.text) {
+        if (confirmPasswordController.text.isNotEmpty &&
+            emailController.text.isNotEmpty &&
+            nameController.text.isNotEmpty &&
+            locationController.text.isNotEmpty) {
+          // upload image to firestore
+
+          showDialog(
+              context: context,
+              builder: (c) {
+                return LoadingDialog(
+                  message: "Registering",
+                );
+              });
+          String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+          fstorage.Reference reference = fstorage.FirebaseStorage.instance
+              .ref()
+              .child("vendors")
+              .child(fileName);
+          fstorage.UploadTask uploadTask =
+              reference.putFile(File(imageXFile!.path));
+          fstorage.TaskSnapshot taskSnapshot =
+              await uploadTask.whenComplete(() {});
+          await taskSnapshot.ref.getDownloadURL().then((url) {
+            vendorImageUrl = url;
+            // save registration information to firestore
+            authenticateSellerAndSignUp();
+          });
+        } else {
+          showDialog(
+              context: context,
+              builder: (c) {
+                return ErrorDialog(
+                  message: "One or more fields is incomplete.",
+                );
+              });
+        }
+      } else {
+        showDialog(
+            context: context,
+            builder: (c) {
+              return ErrorDialog(
+                message: "Passwords do not match.",
+              );
+            });
+      }
+    }
+  }
+
+  void authenticateSellerAndSignUp() async {
+    User? currentUser;
+
+    await firebaseAuth
+        .createUserWithEmailAndPassword(
+      email: emailController.text.trim(),
+      password: passwordController.text.trim(),
+    )
+        .then((auth) {
+      currentUser = auth.user;
+    }).catchError((error) {
+      Navigator.pop(context);
+      showDialog(
+          context: context,
+          builder: (c) {
+            return ErrorDialog(
+              message: error.message.toString(),
+            );
+          });
+    });
+
+    if (currentUser != null) {
+      saveDataToFirestore(currentUser!).then((value) {
+        Navigator.pop(context);
+        //send the user to home page
+        ////////////THISSSSSS PART IS IMPORTANT///////////////
+        Route newRoute = MaterialPageRoute(builder: (c) => const HomeScreen());
+        Navigator.pushReplacement(context, newRoute);
+      });
+    }
+  }
+
+  Future saveDataToFirestore(User currentUser) async {
+    FirebaseFirestore.instance.collection("vendors").doc(currentUser.uid).set({
+      "vendorUID": currentUser.uid,
+      "vendorEmail": currentUser.email,
+      "vendorName": nameController.text.trim(),
+      "vendorAvatarUrl": vendorImageUrl,
+      "address": completeAddress,
+      "status": "approved",
+      "earnings": 0.0,
+      "lat": position!.latitude,
+      "lng": position!.longitude,
+    });
+
+    //save data locally
+    //SharedPreferences?
+    sharedPreferences = await SharedPreferences.getInstance();
+    await sharedPreferences!.setString("uid", currentUser.uid);
+    await sharedPreferences!.setString("email", currentUser.email.toString());
+    await sharedPreferences!.setString("name", nameController.text.trim());
+    await sharedPreferences!.setString("photoUrl", vendorImageUrl);
+  }
+
+>>>>>>> Stashed changes
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
