@@ -62,10 +62,10 @@ class FirebaseHandler {
     });
 
     String imgName = DateTime.now().millisecondsSinceEpoch.toString();
-    avatarUrl = await _uploadAvatarImage(imgName, imgPath, student_cllctn);
+    avatarUrl = await _uploadAvatarImage(imgName, imgPath, studentCllctn);
 
     await _insertNewUsrInfo(
-        student_cllctn,
+        studentCllctn,
         currentUser!.uid,
         _mapStudentFields(
           currentPoints: 0,
@@ -88,12 +88,12 @@ class FirebaseHandler {
     });
 
     String imgName = DateTime.now().millisecondsSinceEpoch.toString();
-    avatarUrl = await _uploadAvatarImage(imgName, imagePath, vendor_cllctn);
+    avatarUrl = await _uploadAvatarImage(imgName, imagePath, vendorCllctn);
 
     String? currUserId = currentUser?.uid;
 
     await _insertNewUsrInfo(
-        vendor_cllctn,
+        vendorCllctn,
         currUserId!,
         _mapVendorFields(
           address: address.trim(),
@@ -111,7 +111,7 @@ class FirebaseHandler {
   /// Check whether provided [usr] is a Vendor by checking if they exist within
   /// the Vendor Collection
   Future<bool> isVendor(User usr) async {
-    final docRef = FirebaseFirestore.instance.collection(vendor_cllctn);
+    final docRef = FirebaseFirestore.instance.collection(vendorCllctn);
 
     return docRef.doc(usr.uid).get().then((usr) {
       return usr.exists;
@@ -122,7 +122,7 @@ class FirebaseHandler {
 
   /// Get info of the document attached to a [uid]
   Map<String, dynamic>? _getStudentInfo(String uid) {
-    final docRef = FirebaseFirestore.instance.collection(student_cllctn);
+    final docRef = FirebaseFirestore.instance.collection(studentCllctn);
     docRef.doc(uid).get().then((value) {
       if (!value.exists) {
         return null;

@@ -30,9 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
             tileMode: TileMode.clamp,
           )),
         ),
-        title: Text(
-          sharedPreferences!.getString(PREFERENCES.NAME)!,
-        ),
+        title: Text(sharedPreferences.getName() ?? "NO NAME FOUND"),
         centerTitle: true,
         automaticallyImplyLeading: true,
         actions: [

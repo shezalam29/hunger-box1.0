@@ -1,5 +1,5 @@
 /// File containing
-const String vendor_cllctn = "vendors";
+const String vendorCllctn = "vendors";
 
 class VendorDoc {
   static const String address = "address";
@@ -13,7 +13,7 @@ class VendorDoc {
   static const String uid = "vendorUID";
 }
 
-const String student_cllctn = "students";
+const String studentCllctn = "students";
 
 class StudentDoc {
   static const String points = "currentPoints";

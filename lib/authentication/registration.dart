@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:hunger_box/fb_handler/fb_handler.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hunger_box/mainScreens/home_screen.dart';
@@ -12,7 +10,6 @@ import 'package:hunger_box/widgets/error_dialog.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:hunger_box/widgets/loading_dialog.dart';
 import 'package:firebase_storage/firebase_storage.dart' as fstorage;
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../global/global.dart';
 
@@ -118,13 +115,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
-    String name = _isVendor ? studNameController.text : vendNameController.text;
-    sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences!.setString(PREFERENCES.UID, FBH.currentUser!.uid);
-    await sharedPreferences!
-        .setString(PREFERENCES.EMAIL, FBH.currentUser!.email.toString());
-    await sharedPreferences!.setString(PREFERENCES.NAME, name);
-    await sharedPreferences!.setString("photoUrl", FBH.avatarUrl);
+    await sharedPreferences.setUID(FBH.currentUser!.uid);
+    await sharedPreferences.setEmail(FBH.currentUser!.email.toString());
+    await sharedPreferences
+        .setName(_isVendor ? studNameController.text : vendNameController.text);
+    await sharedPreferences.setAvatar(FBH.avatarUrl);
 
     // Dismiss registering pop up
     Navigator.pop(context);
@@ -243,11 +238,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
 
     //save data locally
-    sharedPreferences = await SharedPreferences.getInstance();
-    await sharedPreferences!.setString("uid", currentUser.uid);
-    await sharedPreferences!.setString("email", currentUser.email.toString());
-    await sharedPreferences!.setString("name", vendNameController.text.trim());
-    await sharedPreferences!.setString("photoUrl", vendorImageUrl);
+    // sharedPreferences = await SharedPreferences.getInstance();
+    // await sharedPreferences!.setString("uid", currentUser.uid);
+    // await sharedPreferences!.setString("email", currentUser.email.toString());
+    // await sharedPreferences!.setString("name", vendNameController.text.trim());
+    // await sharedPreferences!.setString("photoUrl", vendorImageUrl);
   }
 
   @override

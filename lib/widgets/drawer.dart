@@ -36,7 +36,7 @@ class _MyDrawerState extends State<MyDrawer> {
                   height: 10,
                 ),
                 Text(
-                  sharedPreferences!.getString(PREFERENCES.NAME)!,
+                  sharedPreferences.getName() ?? "NO NAME FOUND",
                   style: const TextStyle(
                     color: Colors.orange,
                     fontSize: 20,
