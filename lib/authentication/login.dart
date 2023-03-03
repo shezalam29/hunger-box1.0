@@ -2,10 +2,11 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:hunger_box/global/global.dart';
+import 'package:hunger_box/global/fb_constants.dart';
 import 'package:hunger_box/mainScreens/home_screen.dart';
 import 'package:hunger_box/widgets/custom_text_field.dart';
-import 'package:flutter/material.dart';
 import 'package:hunger_box/widgets/error_dialog.dart';
 import 'package:hunger_box/widgets/loading_dialog.dart';
 
@@ -79,16 +80,31 @@ class _LoginScreenState extends State<LoginScreen> {
   // TODO inconsistent fields to the firebase
   // TODO needs to check who the user is
   Future readDataAndSetDataLocally(User currentUser) async {
-    await FirebaseFirestore.instance
-        .collection("vendors")
-        .doc(currentUser.uid)
-        .get()
-        .then((snapshot) async {
-      await sharedPreferences.setUID(currentUser.uid);
-      await sharedPreferences.setName(snapshot.data()![nameField]);
-      await sharedPreferences.setEmail(snapshot.data()![emailField]);
-      await sharedPreferences.setAvatar(snapshot.data()![avatarField]);
-    });
+    if (await FBH.isVendor(currentUser)) {
+      await FirebaseFirestore.instance
+          .collection(vendorCllctn)
+          .doc(currentUser.uid)
+          .get()
+          .then((document) async {
+        await sharedPreferences.setUID(currentUser.uid);
+        await sharedPreferences.setName(document.data()![VendorDoc.name]);
+        await sharedPreferences.setEmail(document.data()![VendorDoc.email]);
+        await sharedPreferences
+            .setAvatar(document.data()![VendorDoc.avatarUrl]);
+      });
+    } else {
+      await FirebaseFirestore.instance
+          .collection(studentCllctn)
+          .doc(currentUser.uid)
+          .get()
+          .then((document) async {
+        await sharedPreferences.setUID(currentUser.uid);
+        await sharedPreferences.setName(document.data()![StudentDoc.name]);
+        await sharedPreferences.setEmail(document.data()![StudentDoc.email]);
+        await sharedPreferences
+            .setAvatar(document.data()![StudentDoc.avatarUrl]);
+      });
+    }
   }
 
   @override

@@ -119,7 +119,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
     await sharedPreferences.setEmail(FBH.currentUser!.email.toString());
     await sharedPreferences
         .setName(_isVendor ? studNameController.text : vendNameController.text);
+    print("Set Avatar");
+    print(FBH.avatarUrl);
     await sharedPreferences.setAvatar(FBH.avatarUrl);
+    print(sharedPreferences.getAvatar());
 
     // Dismiss registering pop up
     Navigator.pop(context);

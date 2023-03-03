@@ -200,11 +200,11 @@ class FirebaseHandler {
     Map<String, dynamic> fields = {
       VendorDoc.address: address,
       VendorDoc.earnings: earnings,
-      VendorDoc.lat: vendorEmail,
-      VendorDoc.lng: vendorAvatarUrl,
-      VendorDoc.status: lat,
-      VendorDoc.avatarUrl: lng,
-      VendorDoc.email: status,
+      VendorDoc.lat: lat,
+      VendorDoc.lng: lng,
+      VendorDoc.status: status,
+      VendorDoc.avatarUrl: vendorAvatarUrl,
+      VendorDoc.email: vendorEmail,
       VendorDoc.name: vendorName,
       VendorDoc.uid: vendorUID,
     };
