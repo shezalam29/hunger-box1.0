@@ -1,3 +1,5 @@
+import "dart:io";
+
 import "package:flutter/material.dart";
 //import "package:hunger_box/global/global.dart";
 import "package:hunger_box/mainScreens/home_screen.dart";
@@ -13,6 +15,9 @@ class MenusUpload extends StatefulWidget {
 class _MenusUploadState extends State<MenusUpload> {
   XFile? imageXFile;
   final ImagePicker _picker = ImagePicker();
+
+  TextEditingController shortInfoController = TextEditingController();
+  TextEditingController titleController = TextEditingController();
 
   defaultScreen() {
     return Scaffold(
@@ -159,8 +164,129 @@ class _MenusUploadState extends State<MenusUpload> {
     });
   }
 
+  menusUploadFormScreen() {
+    return Scaffold(
+      appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(255, 188, 169, 146),
+                Color.fromARGB(255, 120, 130, 100),
+              ],
+              begin: FractionalOffset(0.0, 0.0),
+              end: FractionalOffset(1.0, 0.0),
+              stops: [0.0, 1.0],
+              tileMode: TileMode.clamp,
+            ),
+          ),
+        ),
+        title: const Text(
+          "Upload new menu",
+          style: TextStyle(fontSize: 20),
+        ),
+        centerTitle: true,
+        automaticallyImplyLeading: true,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            clearMenusUploadForm();
+          },
+        ),
+        actions: [
+          TextButton(
+            child: const Text(
+              "Add",
+              style: TextStyle(
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+                fontSize: 22, //just decrease it for add size
+              ),
+            ),
+            onPressed: () {},
+          ),
+        ],
+      ),
+      body: ListView(
+        children: [
+          // ignore: sized_box_for_whitespace
+          Container(
+            height: 230,
+            width: MediaQuery.of(context).size.width * 0.8,
+            child: Center(
+              child: AspectRatio(
+                aspectRatio: 16 / 9,
+                child: Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: FileImage(File(imageXFile!.path)),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(
+              Icons.perm_device_information,
+              color: Colors.orange,
+            ),
+            // ignore: sized_box_for_whitespace
+            title: Container(
+              width: 250,
+              child: TextField(
+                style: const TextStyle(color: Colors.black),
+                controller: shortInfoController,
+                decoration: const InputDecoration(
+                  hintText: "Menu Info",
+                  hintStyle: TextStyle(color: Colors.grey),
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+          ),
+          const Divider(
+            color: Colors.red,
+            thickness: 2,
+          ),
+          ListTile(
+            leading: const Icon(
+              Icons.title,
+              color: Colors.orange,
+            ),
+            // ignore: sized_box_for_whitespace
+            title: Container(
+              width: 250,
+              child: TextField(
+                style: const TextStyle(color: Colors.black),
+                controller: titleController,
+                decoration: const InputDecoration(
+                  hintText: "Menu Title",
+                  hintStyle: TextStyle(color: Colors.grey),
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  clearMenusUploadForm() {
+    setState(() {
+      shortInfoController.clear();
+      titleController.clear();
+      imageXFile = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return defaultScreen();
+    return imageXFile == null ? defaultScreen() : menusUploadFormScreen();
   }
 }
