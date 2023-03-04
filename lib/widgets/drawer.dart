@@ -21,14 +21,20 @@ class _MyDrawerState extends State<MyDrawer> {
             padding: const EdgeInsets.only(top: 25, bottom: 10),
             child: Column(
               children: [
-                const Material(
+                Material(
                   borderRadius: BorderRadius.all(Radius.circular(80)),
                   elevation: 10,
                   child: Padding(
                     padding: EdgeInsets.all(1.0),
-                    child: SizedBox(
+                    child: Container(
                       height: 160,
                       width: 160,
+                      child: CircleAvatar(
+                        backgroundImage: NetworkImage(
+                          //Accessing firebase image URL
+                          sharedPreferences.getAvatar() ?? "no avatar",
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -38,7 +44,7 @@ class _MyDrawerState extends State<MyDrawer> {
                 Text(
                   sharedPreferences.getName() ?? "NO NAME FOUND",
                   style: const TextStyle(
-                    color: Colors.orange,
+                    color: Colors.black,
                     fontSize: 20,
                   ),
                 ),

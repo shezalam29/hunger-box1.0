@@ -1,9 +1,16 @@
 import "dart:io";
 
+import "package:cloud_firestore/cloud_firestore.dart";
 import "package:flutter/material.dart";
+import "package:hunger_box/hungerbox_pref/hungerbox_pref.dart";
 //import "package:hunger_box/global/global.dart";
-import "package:hunger_box/mainScreens/home_screen.dart";
+import 'package:hunger_box/mainScreens/vendor_home_screen.dart';
+import "package:hunger_box/widgets/progress_bar.dart";
 import "package:image_picker/image_picker.dart";
+import 'package:firebase_storage/firebase_storage.dart' as storageRef;
+
+import "../global/global.dart";
+import "../widgets/error_dialog.dart";
 
 class MenusUpload extends StatefulWidget {
   const MenusUpload({super.key});
@@ -16,8 +23,15 @@ class _MenusUploadState extends State<MenusUpload> {
   XFile? imageXFile;
   final ImagePicker _picker = ImagePicker();
 
-  TextEditingController shortInfoController = TextEditingController();
+  //text input Controllers
+  TextEditingController menuInfoController = TextEditingController();
   TextEditingController titleController = TextEditingController();
+  TextEditingController priceController = TextEditingController();
+
+  bool uploading = false;
+
+  //Name of the image url
+  String uniqueIdName = DateTime.now().millisecondsSinceEpoch.toString();
 
   defaultScreen() {
     return Scaffold(
@@ -49,32 +63,31 @@ class _MenusUploadState extends State<MenusUpload> {
           ),
           onPressed: () {
             Navigator.push(
-                context, MaterialPageRoute(builder: (c) => const HomeScreen()));
+                context, MaterialPageRoute(builder: (c) => HomeScreen()));
           },
         ),
       ),
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Colors.cyan,
-              Colors.amber,
-            ],
-          ),
-        ),
+        decoration: const BoxDecoration(color: Colors.white),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
-                Icons.shop_two,
-                color: Colors.white,
-                size: 200,
+              InkWell(
+                onTap: () {
+                  takeImage(context);
+                },
+                child: const Icon(
+                  Icons.shop_two,
+                  color: Color.fromARGB(255, 188, 169, 146),
+                  size: 200.0,
+                ),
               ),
               ElevatedButton(
                 style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.amber),
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 188, 169, 146),
+                  ),
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -106,14 +119,14 @@ class _MenusUploadState extends State<MenusUpload> {
         return SimpleDialog(
           title: const Text(
             "Menu Image",
-            style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold),
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           ),
           children: [
             SimpleDialogOption(
               // ignore: sort_child_properties_last
               child: const Text(
                 "Capture With Camera",
-                style: TextStyle(color: Colors.orange),
+                style: TextStyle(color: Color.fromARGB(255, 95, 93, 93)),
               ),
               onPressed: captureImageWithCamera,
             ),
@@ -121,14 +134,14 @@ class _MenusUploadState extends State<MenusUpload> {
               // ignore: sort_child_properties_last
               child: const Text(
                 "Get from Gallery",
-                style: TextStyle(color: Colors.orange),
+                style: TextStyle(color: Color.fromARGB(255, 95, 93, 93)),
               ),
               onPressed: pickImageFromGallery,
             ),
             SimpleDialogOption(
               child: const Text(
                 "Cancel",
-                style: TextStyle(color: Colors.orange),
+                style: TextStyle(color: Colors.red),
               ),
               onPressed: () => Navigator.pop(context),
             ),
@@ -193,7 +206,7 @@ class _MenusUploadState extends State<MenusUpload> {
             color: Colors.white,
           ),
           onPressed: () {
-            clearMenusUploadForm();
+            clearMenuUploadForm();
           },
         ),
         actions: [
@@ -201,17 +214,20 @@ class _MenusUploadState extends State<MenusUpload> {
             child: const Text(
               "Add",
               style: TextStyle(
-                color: Colors.red,
+                color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 22, //just decrease it for add size
               ),
             ),
-            onPressed: () {},
+            onPressed: uploading
+                ? null
+                : () => validateUploadForm(), // check if uploding is true
           ),
         ],
       ),
       body: ListView(
         children: [
+          uploading == true ? linearProgress() : const Text(""),
           // ignore: sized_box_for_whitespace
           Container(
             height: 230,
@@ -223,40 +239,21 @@ class _MenusUploadState extends State<MenusUpload> {
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: FileImage(File(imageXFile!.path)),
-                      fit: BoxFit.cover,
+                      fit: BoxFit.contain,
                     ),
                   ),
                 ),
               ),
             ),
           ),
-          ListTile(
-            leading: const Icon(
-              Icons.perm_device_information,
-              color: Colors.orange,
-            ),
-            // ignore: sized_box_for_whitespace
-            title: Container(
-              width: 250,
-              child: TextField(
-                style: const TextStyle(color: Colors.black),
-                controller: shortInfoController,
-                decoration: const InputDecoration(
-                  hintText: "Menu Info",
-                  hintStyle: TextStyle(color: Colors.grey),
-                  border: InputBorder.none,
-                ),
-              ),
-            ),
-          ),
-          const Divider(
-            color: Colors.red,
+          Divider(
+            color: Color.fromARGB(255, 120, 130, 100),
             thickness: 2,
           ),
           ListTile(
             leading: const Icon(
-              Icons.title,
-              color: Colors.orange,
+              Icons.title_rounded,
+              color: Color.fromARGB(255, 120, 130, 100), //
             ),
             // ignore: sized_box_for_whitespace
             title: Container(
@@ -272,16 +269,143 @@ class _MenusUploadState extends State<MenusUpload> {
               ),
             ),
           ),
+          const Divider(
+            color: Color.fromARGB(255, 120, 130, 100),
+            thickness: 2,
+          ),
+          ListTile(
+            leading: const Icon(
+              Icons.perm_device_information,
+              color: Color.fromARGB(255, 120, 130, 100),
+            ),
+            // ignore: sized_box_for_whitespace
+            title: Container(
+              width: 250,
+              child: TextField(
+                style: const TextStyle(color: Colors.black),
+                controller: menuInfoController,
+                decoration: const InputDecoration(
+                  hintText: "Menu info",
+                  hintStyle: TextStyle(color: Colors.grey),
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+          ),
+          Divider(
+            color: Color.fromARGB(255, 120, 130, 100),
+            thickness: 2,
+          ),
+          ListTile(
+            leading: const Icon(Icons.attach_money_rounded,
+                color: Color.fromARGB(255, 120, 130, 100)),
+            title: Container(
+              width: 250,
+              child: TextField(
+                style: const TextStyle(color: Colors.black),
+                controller: priceController,
+                decoration: InputDecoration(
+                  hintText: "Price",
+                  hintStyle: TextStyle(color: Colors.grey),
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+          ),
+          Divider(
+            color: Color.fromARGB(255, 120, 130, 100),
+            thickness: 2,
+          ),
         ],
       ),
     );
   }
 
-  clearMenusUploadForm() {
+  validateUploadForm() async {
+    if (imageXFile != null) {
+      if (menuInfoController.text.isNotEmpty &&
+          titleController.text.isNotEmpty &&
+          priceController.text.isNotEmpty) {
+        setState(() {
+          uploading = true;
+        });
+
+        //47
+        //upload image
+        String downloadUrl = await uploadImage(File(imageXFile!.path));
+
+        //48
+        //Save image into firebase
+        saveInfo(downloadUrl);
+      } else {
+        showDialog(
+            context: context,
+            builder: (c) {
+              return ErrorDialog(
+                message: "Please enter requiered information",
+              );
+            });
+      }
+    } else {
+      showDialog(
+          context: context,
+          builder: (c) {
+            return ErrorDialog(
+              message: "Please choose an image for menu item",
+            );
+          });
+    }
+  }
+
+  clearMenuUploadForm() {
     setState(() {
-      shortInfoController.clear();
+      menuInfoController.clear();
       titleController.clear();
+      priceController.clear();
       imageXFile = null;
+      //uniqueIdName = "";
+      //uploading = false;
+    });
+  }
+
+  //upload image to firebase
+  uploadImage(imageFile) async {
+    storageRef.Reference reference =
+        storageRef.FirebaseStorage.instance.ref().child("menus");
+
+    storageRef.UploadTask uploadTask =
+        reference.child(uniqueIdName + ".jpg").putFile(imageFile);
+
+    storageRef.TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
+
+    String downloadURL = await taskSnapshot.ref.getDownloadURL();
+
+    return downloadURL;
+  }
+
+  //48
+  saveInfo(String downloadURL) {
+    final ref = FirebaseFirestore.instance
+        .collection("vendors")
+        .doc(sharedPreferences.getUID())
+        .collection(
+            "menus"); //here creates a seller collection called menus with UID
+
+    ref.doc(uniqueIdName).set({
+      "menuID": uniqueIdName,
+      "vendorUID": sharedPreferences.getUID(),
+      "menuTitle": titleController.text.toString(),
+      "menuInfo": menuInfoController.text.toString(),
+      "price": priceController.text.toString(),
+      "datePublished": DateTime.now(),
+      "status": "available",
+      "thumbnailUrl": downloadURL,
+    });
+
+    clearMenuUploadForm();
+    setState(() {
+      uniqueIdName = "";
+      uploading = false;
     });
   }
 

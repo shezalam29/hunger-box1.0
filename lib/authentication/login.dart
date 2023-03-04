@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hunger_box/global/global.dart';
 import 'package:hunger_box/global/fb_constants.dart';
-import 'package:hunger_box/mainScreens/home_screen.dart';
+import 'package:hunger_box/mainScreens/vendor_home_screen.dart';
 import 'package:hunger_box/widgets/custom_text_field.dart';
 import 'package:hunger_box/widgets/error_dialog.dart';
 import 'package:hunger_box/widgets/loading_dialog.dart';
@@ -40,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
     showDialog(
         context: context,
         builder: (c) {
-          return LoadingDialog(message: "Loggin you in.");
+          return LoadingDialog(message: "Loggin you in");
         });
 
     User? currentUser;

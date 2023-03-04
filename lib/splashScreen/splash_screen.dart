@@ -3,7 +3,7 @@ import 'package:hunger_box/authentication/auth_screen.dart';
 import 'dart:async';
 
 import 'package:hunger_box/global/global.dart';
-import 'package:hunger_box/mainScreens/home_screen.dart';
+import 'package:hunger_box/mainScreens/vendor_home_screen.dart';
 
 class MySplashScreen extends StatefulWidget {
   const MySplashScreen({super.key});

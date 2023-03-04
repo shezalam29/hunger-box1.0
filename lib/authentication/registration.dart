@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:hunger_box/mainScreens/home_screen.dart';
+import 'package:hunger_box/mainScreens/vendor_home_screen.dart';
 import 'package:hunger_box/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:hunger_box/widgets/error_dialog.dart';
