@@ -21,6 +21,14 @@ class HungerBoxPreferences {
     return _singleton!;
   }
 
+  Future setPreferenceData(
+      {uid = "", name = "", email = "", avatar = ""}) async {
+    await setUID(uid);
+    await setName(name);
+    await setEmail(email);
+    await setAvatar(avatar);
+  }
+
   Future setUID(String val) async {
     await _preferences.setString(UID, val);
   }

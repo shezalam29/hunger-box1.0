@@ -5,7 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as fstorage;
-import 'package:hunger_box/global/fb_constants.dart';
+import 'package:hunger_box/global/global.dart';
 
 class FirebaseHandler {
   /// Singleton to insure only single user is logged on
@@ -15,7 +15,7 @@ class FirebaseHandler {
   late String _psswrd;
 
   /// cached Current User
-  late User? currentUser;
+  User? currentUser;
 
   /// Cached path to the avatar image
   late String avatarUrl;
@@ -40,13 +40,12 @@ class FirebaseHandler {
   }
 
   /// Gets the current logged in user's info
-  Map<String, dynamic> getCurrentUserInfo() {
-    var info = _getStudentInfo(currentUser!.uid.toString());
-
-    if (info == null) {
-      throw Exception("Fatal Error, current user has no information");
+  Future<DocumentSnapshot<Map<String, dynamic>>?> getCurrentUserInfo() async {
+    if (currentUser == null) {
+      return null;
     }
-    return info;
+    String cllctn = await isVendor(currentUser!) ? vendorCllctn : studentCllctn;
+    return _getDocument(cllctn, currentUser!.uid);
   }
 
   /// Register a new Student into the database with a hunterId, email, and password.
@@ -120,16 +119,11 @@ class FirebaseHandler {
 
   // ============================ PRIVATE METHODS ============================
 
-  /// Get info of the document attached to a [uid]
-  Map<String, dynamic>? _getStudentInfo(String uid) {
-    final docRef = FirebaseFirestore.instance.collection(studentCllctn);
-    docRef.doc(uid).get().then((value) {
-      if (!value.exists) {
-        return null;
-      } else {
-        return value.data();
-      }
-    });
+  /// Get the document attached to a [uid] in a [cllctn]
+  Future<DocumentSnapshot<Map<String, dynamic>>> _getDocument(
+      String cllctn, String uid) {
+    final docRef = FirebaseFirestore.instance.collection(cllctn);
+    return docRef.doc(uid).get();
   }
 
   /// Insert a New user into a [collection] with a key of [key] and [values]
