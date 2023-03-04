@@ -63,7 +63,7 @@ class _MenusUploadState extends State<MenusUpload> {
           ),
           onPressed: () {
             Navigator.push(
-                context, MaterialPageRoute(builder: (c) => HomeScreen()));
+                context, MaterialPageRoute(builder: (c) => VendorHomeScreen()));
           },
         ),
       ),

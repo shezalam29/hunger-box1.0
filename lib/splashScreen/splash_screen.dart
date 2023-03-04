@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:hunger_box/global/global.dart';
 import 'package:hunger_box/mainScreens/vendor_home_screen.dart';
+import 'package:hunger_box/mainScreens/user_home_screen.dart';
 
 class MySplashScreen extends StatefulWidget {
   const MySplashScreen({super.key});
@@ -16,8 +17,11 @@ class _MySplashScreenState extends State<MySplashScreen> {
   startTimer() {
     Timer(const Duration(seconds: 1), () async {
       if (firebaseAuth.currentUser != null) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (c) => const HomeScreen()));
+        bool isVendor = await FBH.isVendor(FBH.currentUser!);
+
+        Navigator.push(context, MaterialPageRoute(builder: (c) {
+          return isVendor ? const VendorHomeScreen() : const UserHomeScreen();
+        }));
       } else {
         Navigator.push(
             context, MaterialPageRoute(builder: (c) => const AuthScreen()));

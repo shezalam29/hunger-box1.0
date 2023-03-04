@@ -12,14 +12,14 @@ import '../widgets/menu_info_design.dart';
 import '../widgets/progress_bar.dart';
 import '../widgets/text_widget.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class VendorHomeScreen extends StatefulWidget {
+  const VendorHomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<VendorHomeScreen> createState() => _VendorHomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _VendorHomeScreenState extends State<VendorHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -114,15 +114,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _fbErrorHandler(e);
       return;
     }
-
-    await sharedPreferences.setUID(FBH.currentUser!.uid);
-    await sharedPreferences.setEmail(FBH.currentUser!.email.toString());
-    await sharedPreferences
-        .setName(_isVendor ? studNameController.text : vendNameController.text);
-    print("Set Avatar");
-    print(FBH.avatarUrl);
-    await sharedPreferences.setAvatar(FBH.avatarUrl);
-    print(sharedPreferences.getAvatar());
+    await sharedPreferences.setPreferenceData(
+        uid: FBH.currentUser!.uid,
+        name: FBH.currentUser!.email.toString(),
+        email: _isVendor ? studNameController.text : vendNameController.text,
+        avatar: FBH.avatarUrl);
 
     // Dismiss registering pop up
     Navigator.pop(context);
@@ -220,7 +216,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         Navigator.pop(context);
         //send the user to home page
         ////////////THISSSSSS PART IS IMPORTANT///////////////
-        Route newRoute = MaterialPageRoute(builder: (c) => const HomeScreen());
+        Route newRoute =
+            MaterialPageRoute(builder: (c) => const VendorHomeScreen());
         Navigator.pushReplacement(context, newRoute);
       });
     }

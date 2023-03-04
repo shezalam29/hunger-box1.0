@@ -4,8 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hunger_box/global/global.dart';
-import 'package:hunger_box/global/fb_constants.dart';
 import 'package:hunger_box/mainScreens/vendor_home_screen.dart';
+import 'package:hunger_box/mainScreens/user_home_screen.dart';
 import 'package:hunger_box/widgets/custom_text_field.dart';
 import 'package:hunger_box/widgets/error_dialog.dart';
 import 'package:hunger_box/widgets/loading_dialog.dart';
@@ -43,16 +43,9 @@ class _LoginScreenState extends State<LoginScreen> {
           return LoadingDialog(message: "Loggin you in");
         });
 
-    User? currentUser;
-
-    await firebaseAuth
-        .signInWithEmailAndPassword(
-      email: emailController.text.trim(),
-      password: passwordController.text.trim(),
-    )
-        .then((auth) {
-      currentUser = auth.user!;
-    }).catchError((error) {
+    await FBH
+        .login(emailController.text.trim(), passwordController.text.trim())
+        .catchError((error) {
       Navigator.pop(context);
       showDialog(
           context: context,
@@ -63,21 +56,41 @@ class _LoginScreenState extends State<LoginScreen> {
           });
     });
 
-    await FBH.isVendor(currentUser!);
+    if (FBH.currentUser == null) return;
 
-    if (currentUser != null) {
-      readDataAndSetDataLocally(currentUser!).then((value) {
-        Navigator.pop(context);
-        Navigator.push(
-            context, MaterialPageRoute(builder: (c) => const HomeScreen()));
+    bool _isVendor = await FBH.isVendor(FBH.currentUser!);
+
+    if (FBH.currentUser != null) {
+      String nameField, emailField, avatarField;
+      if (_isVendor) {
+        nameField = VendorDoc.name;
+        emailField = VendorDoc.email;
+        avatarField = VendorDoc.avatarUrl;
+      } else {
+        nameField = StudentDoc.name;
+        emailField = StudentDoc.email;
+        avatarField = StudentDoc.avatarUrl;
+      }
+
+      await FBH.getCurrentUserInfo().then((doc) async {
+        Map<String, dynamic> data = doc!.data()!;
+        await sharedPreferences.setPreferenceData(
+            uid: FBH.currentUser!.uid,
+            name: data[nameField],
+            email: data[emailField],
+            avatar: data[avatarField]);
       });
+
+      Navigator.pop(context);
+      Navigator.push(context, MaterialPageRoute(builder: (c) {
+        return _isVendor ? VendorHomeScreen() : UserHomeScreen();
+      }));
     }
   }
 
   // TODO this is a duplicate from registration.dart, find a way to consolidate
   // into one function.
   // SharedPreferences Handler?
-  // TODO inconsistent fields to the firebase
   // TODO needs to check who the user is
   Future readDataAndSetDataLocally(User currentUser) async {
     if (await FBH.isVendor(currentUser)) {
@@ -86,11 +99,11 @@ class _LoginScreenState extends State<LoginScreen> {
           .doc(currentUser.uid)
           .get()
           .then((document) async {
-        await sharedPreferences.setUID(currentUser.uid);
-        await sharedPreferences.setName(document.data()![VendorDoc.name]);
-        await sharedPreferences.setEmail(document.data()![VendorDoc.email]);
-        await sharedPreferences
-            .setAvatar(document.data()![VendorDoc.avatarUrl]);
+        await sharedPreferences.setPreferenceData(
+            uid: currentUser.uid,
+            name: document.data()![VendorDoc.name],
+            email: document.data()![VendorDoc.email],
+            avatar: document.data()![VendorDoc.avatarUrl]);
       });
     } else {
       await FirebaseFirestore.instance
@@ -98,11 +111,11 @@ class _LoginScreenState extends State<LoginScreen> {
           .doc(currentUser.uid)
           .get()
           .then((document) async {
-        await sharedPreferences.setUID(currentUser.uid);
-        await sharedPreferences.setName(document.data()![StudentDoc.name]);
-        await sharedPreferences.setEmail(document.data()![StudentDoc.email]);
-        await sharedPreferences
-            .setAvatar(document.data()![StudentDoc.avatarUrl]);
+        await sharedPreferences.setPreferenceData(
+            uid: currentUser.uid,
+            name: document.data()![StudentDoc.name],
+            email: document.data()![StudentDoc.email],
+            avatar: document.data()![StudentDoc.avatarUrl]);
       });
     }
   }
