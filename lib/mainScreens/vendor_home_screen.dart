@@ -23,7 +23,7 @@ class _VendorHomeScreenState extends State<VendorHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: MyDrawer(),
+      drawer: const MyDrawer(),
       appBar: AppBar(
         flexibleSpace: Container(
           decoration: const BoxDecoration(
@@ -55,7 +55,7 @@ class _VendorHomeScreenState extends State<VendorHomeScreen> {
       // ignore: prefer_const_constructors
       //drawer: MyDrawer(),
       body: Container(
-        margin: EdgeInsets.only(left: 6.0, right: 6.0),
+        margin: const EdgeInsets.only(left: 6.0, right: 6.0),
         child: CustomScrollView(slivers: [
           SliverPersistentHeader(
               pinned: true, delegate: TextWidgetHeader(title: "Menu")),

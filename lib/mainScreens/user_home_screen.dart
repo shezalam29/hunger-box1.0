@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hunger_box/global/global.dart';
 import 'package:hunger_box/uploadScreen/menus_upload.dart';
 
-import '../widgets/drawer.dart';
+import '../widgets/user_drawer.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:hunger_box/model/menus.dart';
 
@@ -25,7 +25,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: MyDrawer(),
+      drawer: const MyDrawerUser(),
       appBar: AppBar(
         flexibleSpace: Container(
           decoration: const BoxDecoration(
@@ -46,9 +46,9 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
       ),
 
       // ignore: prefer_const_constructors
-      //drawer: MyDrawer(),
+      // drawer: MyDrawer(),
       body: Container(
-        child: Text("This is the User Screen"),
+        child: const Text("This is the User Screen"),
       ),
     );
   }

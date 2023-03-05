@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:hunger_box/authentication/auth_screen.dart';
 import 'package:hunger_box/global/global.dart';
 
-class MyDrawer extends StatefulWidget {
-  const MyDrawer({super.key});
+class MyDrawerUser extends StatefulWidget {
+  const MyDrawerUser({super.key});
 
   @override
-  State<MyDrawer> createState() => _MyDrawerState();
+  State<MyDrawerUser> createState() => _MyDrawerUserState();
 }
 
-class _MyDrawerState extends State<MyDrawer> {
+class _MyDrawerUserState extends State<MyDrawerUser> {
   @override
   Widget build(BuildContext context) {
     var key = 'name';
@@ -22,10 +22,10 @@ class _MyDrawerState extends State<MyDrawer> {
             child: Column(
               children: [
                 Material(
-                  borderRadius: BorderRadius.all(Radius.circular(80)),
+                  borderRadius: const BorderRadius.all(Radius.circular(80)),
                   elevation: 10,
                   child: Padding(
-                    padding: EdgeInsets.all(1.0),
+                    padding: const EdgeInsets.all(1.0),
                     child: Container(
                       height: 160,
                       width: 160,
@@ -77,7 +77,7 @@ class _MyDrawerState extends State<MyDrawer> {
                     color: Colors.black,
                   ),
                   title: const Text(
-                    "Earnings",
+                    "My Orders",
                     style: TextStyle(color: Colors.black),
                   ),
                   onTap: () {},
@@ -89,7 +89,7 @@ class _MyDrawerState extends State<MyDrawer> {
                     color: Colors.black,
                   ),
                   title: const Text(
-                    "New Orders",
+                    "History",
                     style: TextStyle(color: Colors.black),
                   ),
                   onTap: () {},
@@ -97,11 +97,11 @@ class _MyDrawerState extends State<MyDrawer> {
                 const Divider(height: 10, color: Colors.grey, thickness: 1),
                 ListTile(
                   leading: const Icon(
-                    Icons.local_shipping,
+                    Icons.search,
                     color: Colors.black,
                   ),
                   title: const Text(
-                    "History of Orders",
+                    "Search",
                     style: TextStyle(color: Colors.black),
                   ),
                   onTap: () {},
@@ -134,9 +134,7 @@ class _MyDrawerState extends State<MyDrawer> {
   }
 }
 
-
-
-/*class MyDrawer extends StatelessWidget {
+/*class MyDrawerUser extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
