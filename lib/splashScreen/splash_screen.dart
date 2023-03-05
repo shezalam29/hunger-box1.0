@@ -20,7 +20,7 @@ class _MySplashScreenState extends State<MySplashScreen> {
         bool isVendor = await FBH.isVendor(FBH.currentUser!);
 
         Navigator.push(context, MaterialPageRoute(builder: (c) {
-          return isVendor ? const VendorHomeScreen() : const UserHomeScreen();
+          return isVendor ? const VendorHomeScreen() : UserHomeScreen();
         }));
       } else {
         Navigator.push(
