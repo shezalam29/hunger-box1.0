@@ -2,7 +2,7 @@ import "dart:io";
 
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:flutter/material.dart";
-import "package:hunger_box/hungerbox_pref/hungerbox_pref.dart";
+//import "package:hunger_box/hungerbox_pref/hungerbox_pref.dart";
 //import "package:hunger_box/global/global.dart";
 import 'package:hunger_box/mainScreens/vendor_home_screen.dart';
 import "package:hunger_box/widgets/progress_bar.dart";
@@ -62,8 +62,8 @@ class _MenusUploadState extends State<MenusUpload> {
             color: Colors.white,
           ),
           onPressed: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (c) => VendorHomeScreen()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (c) => const VendorHomeScreen()));
           },
         ),
       ),
@@ -86,7 +86,7 @@ class _MenusUploadState extends State<MenusUpload> {
               ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(
-                    Color.fromARGB(255, 188, 169, 146),
+                    const Color.fromARGB(255, 188, 169, 146),
                   ),
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
@@ -211,6 +211,9 @@ class _MenusUploadState extends State<MenusUpload> {
         ),
         actions: [
           TextButton(
+            onPressed: uploading
+                ? null
+                : () => validateUploadForm(), // check if uploding is true
             child: const Text(
               "Add",
               style: TextStyle(
@@ -219,9 +222,6 @@ class _MenusUploadState extends State<MenusUpload> {
                 fontSize: 22, //just decrease it for add size
               ),
             ),
-            onPressed: uploading
-                ? null
-                : () => validateUploadForm(), // check if uploding is true
           ),
         ],
       ),
@@ -246,7 +246,7 @@ class _MenusUploadState extends State<MenusUpload> {
               ),
             ),
           ),
-          Divider(
+          const Divider(
             color: Color.fromARGB(255, 120, 130, 100),
             thickness: 2,
           ),
@@ -292,7 +292,7 @@ class _MenusUploadState extends State<MenusUpload> {
               ),
             ),
           ),
-          Divider(
+          const Divider(
             color: Color.fromARGB(255, 120, 130, 100),
             thickness: 2,
           ),
@@ -304,7 +304,7 @@ class _MenusUploadState extends State<MenusUpload> {
               child: TextField(
                 style: const TextStyle(color: Colors.black),
                 controller: priceController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: "Price",
                   hintStyle: TextStyle(color: Colors.grey),
                   border: InputBorder.none,
@@ -312,7 +312,7 @@ class _MenusUploadState extends State<MenusUpload> {
               ),
             ),
           ),
-          Divider(
+          const Divider(
             color: Color.fromARGB(255, 120, 130, 100),
             thickness: 2,
           ),
@@ -388,8 +388,7 @@ class _MenusUploadState extends State<MenusUpload> {
     final ref = FirebaseFirestore.instance
         .collection("vendors")
         .doc(sharedPreferences.getUID())
-        .collection(
-            "menus"); //here creates a seller collection called menus with UID
+        .collection("menus");
 
     ref.doc(uniqueIdName).set({
       "menuID": uniqueIdName,

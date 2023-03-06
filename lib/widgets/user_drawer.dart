@@ -12,8 +12,8 @@ class MyDrawerUser extends StatefulWidget {
 class _MyDrawerUserState extends State<MyDrawerUser> {
   @override
   Widget build(BuildContext context) {
-    var key = 'name';
-    var key2 = key;
+    //var key = 'name';
+    //var key2 = key;
     return Drawer(
       child: ListView(
         children: [
