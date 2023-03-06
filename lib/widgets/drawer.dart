@@ -12,8 +12,8 @@ class MyDrawer extends StatefulWidget {
 class _MyDrawerState extends State<MyDrawer> {
   @override
   Widget build(BuildContext context) {
-    var key = 'name';
-    var key2 = key;
+    //var key = 'name';
+    //var key2 = key;
     return Drawer(
       child: ListView(
         children: [
@@ -22,10 +22,10 @@ class _MyDrawerState extends State<MyDrawer> {
             child: Column(
               children: [
                 Material(
-                  borderRadius: BorderRadius.all(Radius.circular(80)),
+                  borderRadius: const BorderRadius.all(Radius.circular(80)),
                   elevation: 10,
                   child: Padding(
-                    padding: EdgeInsets.all(1.0),
+                    padding: const EdgeInsets.all(1.0),
                     child: Container(
                       height: 160,
                       width: 160,
