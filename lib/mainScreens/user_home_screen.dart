@@ -56,50 +56,6 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
       ),
       body: CustomScrollView(
         slivers: [
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Container(
-                height: MediaQuery.of(context).size.height * .25,
-                width: MediaQuery.of(context).size.width,
-                child: CarouselSlider(
-                  options: CarouselOptions(
-                    height: MediaQuery.of(context).size.height * .25,
-                    aspectRatio: 16 / 9,
-                    viewportFraction: 0.8,
-                    initialPage: 0,
-                    enableInfiniteScroll: true,
-                    reverse: false,
-                    autoPlay: true,
-                    autoPlayInterval: const Duration(seconds: 2),
-                    autoPlayAnimationDuration:
-                        const Duration(milliseconds: 500),
-                    autoPlayCurve: Curves.fastOutSlowIn, //animation
-                    enlargeCenterPage: true,
-                    enlargeFactor: 0.3,
-                    scrollDirection: Axis.horizontal,
-                  ),
-                  items: items.map((index) {
-                    return Builder(builder: (BuildContext context) {
-                      return Container(
-                        width: MediaQuery.of(context).size.width,
-                        margin: const EdgeInsets.symmetric(horizontal: 1.0),
-
-                        ///decoration: BoxDecoration(),
-                        child: Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Image.asset(
-                            index,
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                      );
-                    });
-                  }).toList(),
-                ),
-              ),
-            ),
-          ),
           StreamBuilder<QuerySnapshot>(
             stream:
                 FirebaseFirestore.instance.collection("vendors").snapshots(),
