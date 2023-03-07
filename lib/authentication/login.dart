@@ -31,7 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
           context: context,
           builder: (c) {
             return ErrorDialog(
-                message: "Please type in youer email and password.");
+                message: "Please type in your Email and Password.");
           });
     }
   }
@@ -40,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
     showDialog(
         context: context,
         builder: (c) {
-          return LoadingDialog(message: "Loggin you in");
+          return LoadingDialog(message: "Logging you in");
         });
 
     await FBH
