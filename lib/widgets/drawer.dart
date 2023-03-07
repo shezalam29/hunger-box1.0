@@ -58,7 +58,6 @@ class _MyDrawerState extends State<MyDrawer> {
             padding: const EdgeInsets.only(top: 1.0),
             child: Column(
               children: [
-                const Divider(height: 10, color: Colors.grey, thickness: 1),
                 ListTile(
                   leading: const Icon(
                     Icons.home,
@@ -70,7 +69,6 @@ class _MyDrawerState extends State<MyDrawer> {
                   ),
                   onTap: () {},
                 ),
-                const Divider(height: 10, color: Colors.grey, thickness: 1),
                 ListTile(
                   leading: const Icon(
                     Icons.monetization_on,
@@ -82,7 +80,6 @@ class _MyDrawerState extends State<MyDrawer> {
                   ),
                   onTap: () {},
                 ),
-                const Divider(height: 10, color: Colors.grey, thickness: 1),
                 ListTile(
                   leading: const Icon(
                     Icons.reorder,
@@ -94,7 +91,6 @@ class _MyDrawerState extends State<MyDrawer> {
                   ),
                   onTap: () {},
                 ),
-                const Divider(height: 10, color: Colors.grey, thickness: 1),
                 ListTile(
                   leading: const Icon(
                     Icons.local_shipping,
@@ -106,7 +102,6 @@ class _MyDrawerState extends State<MyDrawer> {
                   ),
                   onTap: () {},
                 ),
-                const Divider(height: 10, color: Colors.grey, thickness: 1),
                 ListTile(
                   leading: const Icon(
                     Icons.exit_to_app,

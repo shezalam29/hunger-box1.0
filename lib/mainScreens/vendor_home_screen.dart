@@ -47,10 +47,10 @@ class _VendorHomeScreenState extends State<VendorHomeScreen> {
       // ignore: prefer_const_constructors
       //drawer: MyDrawer(),
       body: Container(
-        margin: const EdgeInsets.only(left: 6.0, right: 6.0),
+        //margin: const EdgeInsets.only(left: 6.0, right: 6.0),
         child: CustomScrollView(slivers: [
           SliverPersistentHeader(
-              pinned: true, delegate: TextWidgetHeader(title: "Menu")),
+              pinned: true, delegate: TextWidgetHeader(title: "Your Menu")),
           StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
                 .collection("vendors")

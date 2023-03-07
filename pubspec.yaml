@@ -79,3 +79,15 @@ flutter:
     - family: Raleway-Bold
       fonts: 
         - asset: assets/fonts/Raleway-Bold.ttf
+    - family: Raleway-Black
+      fonts: 
+        - asset: assets/fonts/Raleway-Black.ttf
+    - family: Raleway-Black
+      fonts: 
+        - asset: assets/fonts/Raleway-Black.ttf
+    - family: Raleway-Italic
+      fonts: 
+        - asset: assets/fonts/Raleway-Italic.ttf
+    - family: Raleway-SemiBold
+      fonts: 
+        - asset: assets/fonts/Raleway-SemiBold.ttf

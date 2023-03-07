@@ -18,7 +18,7 @@ class _InfoDesignWidgetState extends State<InfoDesignWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(4),
+      margin: EdgeInsets.all(8),
       decoration: BoxDecoration(
         border: Border.all(
           color: Colors.grey,
@@ -27,7 +27,7 @@ class _InfoDesignWidgetState extends State<InfoDesignWidget> {
         borderRadius: BorderRadius.circular(12.0),
       ),
       child: InkWell(
-        splashColor: Colors.orange,
+        splashColor: Color.fromARGB(255, 139, 139, 139),
         child: Padding(
           padding: const EdgeInsets.all(5.0),
           child: Container(
@@ -40,7 +40,7 @@ class _InfoDesignWidgetState extends State<InfoDesignWidget> {
                 Align(
                   alignment: Alignment.topCenter,
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(12.0),
                     child: Image.network(
                       widget.model!.thumbnailUrl!,
                       height: 120.0,
@@ -58,7 +58,7 @@ class _InfoDesignWidgetState extends State<InfoDesignWidget> {
                     overflow: TextOverflow.ellipsis, // text overflow
                     color: Colors.black,
                     fontSize: 20,
-                    //fontFamily: "Arial",
+                    //fontFamily: "Raleway",
                   ),
                 ),
                 Text(
@@ -67,7 +67,7 @@ class _InfoDesignWidgetState extends State<InfoDesignWidget> {
                     overflow: TextOverflow.ellipsis,
                     color: Colors.black,
                     fontSize: 17,
-                    // fontFamily: "Train",
+                    //fontFamily: "Raleway",
                   ),
                 ),
                 Text(
@@ -76,7 +76,7 @@ class _InfoDesignWidgetState extends State<InfoDesignWidget> {
                     overflow: TextOverflow.ellipsis,
                     color: Color.fromARGB(255, 120, 130, 100),
                     fontSize: 14,
-                    //fontFamily: "Train",
+                    fontFamily: "Raleway-Italic",
                   ),
                 ),
               ],

@@ -38,21 +38,12 @@ class _MenusUploadState extends State<MenusUpload> {
       appBar: AppBar(
         flexibleSpace: Container(
           decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color.fromARGB(255, 188, 169, 146),
-                Color.fromARGB(255, 120, 130, 100),
-              ],
-              begin: FractionalOffset(0.0, 0.0),
-              end: FractionalOffset(1.0, 0.0),
-              stops: [0.0, 1.0],
-              tileMode: TileMode.clamp,
-            ),
+            color: Color.fromARGB(255, 120, 130, 100),
           ),
         ),
         title: const Text(
-          "Add new menu",
-          style: TextStyle(fontSize: 30),
+          "Add a new menu item",
+          style: TextStyle(fontSize: 20),
         ),
         centerTitle: true,
         automaticallyImplyLeading: true,
@@ -78,9 +69,9 @@ class _MenusUploadState extends State<MenusUpload> {
                   takeImage(context);
                 },
                 child: const Icon(
-                  Icons.shop_two,
+                  Icons.add_box,
                   color: Color.fromARGB(255, 188, 169, 146),
-                  size: 200.0,
+                  size: 150.0,
                 ),
               ),
               ElevatedButton(
@@ -98,7 +89,7 @@ class _MenusUploadState extends State<MenusUpload> {
                   takeImage(context);
                 },
                 child: const Text(
-                  "Add New Menu",
+                  "Add New Menu Item",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
@@ -118,14 +109,14 @@ class _MenusUploadState extends State<MenusUpload> {
       builder: (context) {
         return SimpleDialog(
           title: const Text(
-            "Menu Image",
+            "Item Image",
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           ),
           children: [
             SimpleDialogOption(
               // ignore: sort_child_properties_last
               child: const Text(
-                "Capture With Camera",
+                "Capture with Camera",
                 style: TextStyle(color: Color.fromARGB(255, 95, 93, 93)),
               ),
               onPressed: captureImageWithCamera,
@@ -133,7 +124,7 @@ class _MenusUploadState extends State<MenusUpload> {
             SimpleDialogOption(
               // ignore: sort_child_properties_last
               child: const Text(
-                "Get from Gallery",
+                "Choose from Gallery",
                 style: TextStyle(color: Color.fromARGB(255, 95, 93, 93)),
               ),
               onPressed: pickImageFromGallery,
@@ -182,20 +173,11 @@ class _MenusUploadState extends State<MenusUpload> {
       appBar: AppBar(
         flexibleSpace: Container(
           decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color.fromARGB(255, 188, 169, 146),
-                Color.fromARGB(255, 120, 130, 100),
-              ],
-              begin: FractionalOffset(0.0, 0.0),
-              end: FractionalOffset(1.0, 0.0),
-              stops: [0.0, 1.0],
-              tileMode: TileMode.clamp,
-            ),
+            color: Color.fromARGB(255, 120, 130, 100),
           ),
         ),
         title: const Text(
-          "Upload new menu",
+          "Menu Item Info",
           style: TextStyle(fontSize: 20),
         ),
         centerTitle: true,
@@ -215,7 +197,7 @@ class _MenusUploadState extends State<MenusUpload> {
                 ? null
                 : () => validateUploadForm(), // check if uploding is true
             child: const Text(
-              "Add",
+              "+",
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -246,10 +228,10 @@ class _MenusUploadState extends State<MenusUpload> {
               ),
             ),
           ),
-          const Divider(
-            color: Color.fromARGB(255, 120, 130, 100),
-            thickness: 2,
+          const SizedBox(
+            height: 25,
           ),
+
           ListTile(
             leading: const Icon(
               Icons.title_rounded,
@@ -262,17 +244,18 @@ class _MenusUploadState extends State<MenusUpload> {
                 style: const TextStyle(color: Colors.black),
                 controller: titleController,
                 decoration: const InputDecoration(
-                  hintText: "Menu Title",
+                  hintText: "Item Name",
                   hintStyle: TextStyle(color: Colors.grey),
-                  border: InputBorder.none,
+                  border: OutlineInputBorder(),
                 ),
               ),
             ),
           ),
-          const Divider(
-            color: Color.fromARGB(255, 120, 130, 100),
-            thickness: 2,
+
+          const SizedBox(
+            height: 15,
           ),
+
           ListTile(
             leading: const Icon(
               Icons.perm_device_information,
@@ -285,17 +268,18 @@ class _MenusUploadState extends State<MenusUpload> {
                 style: const TextStyle(color: Colors.black),
                 controller: menuInfoController,
                 decoration: const InputDecoration(
-                  hintText: "Menu info",
+                  hintText: "General description",
                   hintStyle: TextStyle(color: Colors.grey),
-                  border: InputBorder.none,
+                  border: OutlineInputBorder(),
                 ),
               ),
             ),
           ),
-          const Divider(
-            color: Color.fromARGB(255, 120, 130, 100),
-            thickness: 2,
+
+          const SizedBox(
+            height: 15,
           ),
+
           ListTile(
             leading: const Icon(Icons.attach_money_rounded,
                 color: Color.fromARGB(255, 120, 130, 100)),
@@ -307,14 +291,10 @@ class _MenusUploadState extends State<MenusUpload> {
                 decoration: const InputDecoration(
                   hintText: "Price",
                   hintStyle: TextStyle(color: Colors.grey),
-                  border: InputBorder.none,
+                  border: OutlineInputBorder(),
                 ),
               ),
             ),
-          ),
-          const Divider(
-            color: Color.fromARGB(255, 120, 130, 100),
-            thickness: 2,
           ),
         ],
       ),

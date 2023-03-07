@@ -15,16 +15,16 @@ class _InfoDesignWidgetState extends State<InfoDesignWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(4),
+      margin: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         border: Border.all(
-          color: const Color.fromRGBO(47, 128, 237, 1),
-          width: 0,
+          color: const Color.fromARGB(255, 153, 153, 153),
+          width: 1,
         ),
-        borderRadius: BorderRadius.circular(12.0),
+        borderRadius: BorderRadius.circular(15),
       ),
       child: InkWell(
-        splashColor: Colors.orange,
+        splashColor: const Color.fromARGB(255, 255, 255, 255),
         child: Padding(
           padding: const EdgeInsets.all(5.0),
           child: Container(
@@ -37,7 +37,7 @@ class _InfoDesignWidgetState extends State<InfoDesignWidget> {
                 Align(
                   alignment: Alignment.topCenter,
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(15),
                     child: Image.network(
                       widget.model!.vendorAvatarUrl!,
                       height: 165,
@@ -52,17 +52,17 @@ class _InfoDesignWidgetState extends State<InfoDesignWidget> {
                 Text(
                   widget.model!.name!,
                   style: const TextStyle(
-                    color: Color.fromARGB(190, 0, 0, 0),
+                    color: Color.fromARGB(255, 0, 0, 0),
                     fontSize: 20,
-                    fontFamily: "Raleway",
+                    //fontFamily: "Raleway-SemiBold",
                   ),
                 ),
                 Text(
                   widget.model!.email!,
                   style: const TextStyle(
-                    color: Color.fromARGB(255, 108, 39, 39),
-                    fontSize: 12,
-                    fontFamily: "Raleway",
+                    color: Color.fromARGB(255, 0, 0, 0),
+                    fontSize: 15,
+                    fontFamily: "Raleway-Italic",
                   ),
                 ),
                 // Divider(
