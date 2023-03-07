@@ -342,7 +342,7 @@ class _MenusUploadState extends State<MenusUpload> {
             context: context,
             builder: (c) {
               return ErrorDialog(
-                message: "Please enter requiered information",
+                message: "Please enter required information",
               );
             });
       }
@@ -351,7 +351,7 @@ class _MenusUploadState extends State<MenusUpload> {
           context: context,
           builder: (c) {
             return ErrorDialog(
-              message: "Please choose an image for menu item",
+              message: "Please choose an image for the menu item",
             );
           });
     }

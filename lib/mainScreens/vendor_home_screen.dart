@@ -27,16 +27,8 @@ class _VendorHomeScreenState extends State<VendorHomeScreen> {
       appBar: AppBar(
         flexibleSpace: Container(
           decoration: const BoxDecoration(
-              gradient: LinearGradient(
-            colors: [
-              Color.fromARGB(255, 188, 169, 146),
-              Color.fromARGB(255, 120, 130, 100),
-            ],
-            begin: FractionalOffset(0.0, 0.0),
-            end: FractionalOffset(1.0, 0.0),
-            stops: [0.0, 1.0],
-            tileMode: TileMode.clamp,
-          )),
+            color: Color.fromARGB(255, 120, 130, 100),
+          ),
         ),
         title: Text(sharedPreferences.getName() ?? "NO NAME FOUND"),
         centerTitle: true,

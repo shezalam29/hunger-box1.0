@@ -18,17 +18,8 @@ class _AuthScreenState extends State<AuthScreen> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           flexibleSpace: Container(
-            decoration: const BoxDecoration(
-                gradient: LinearGradient(
-              colors: [
-                Color.fromARGB(255, 188, 169, 146),
-                Color.fromARGB(255, 120, 130, 100),
-              ],
-              begin: FractionalOffset(0.0, 0.0),
-              end: FractionalOffset(1.0, 0.0),
-              stops: [0.0, 1.0],
-              tileMode: TileMode.clamp,
-            )),
+            decoration:
+                const BoxDecoration(color: Color.fromARGB(255, 120, 130, 100)),
           ),
           centerTitle: true,
           bottom: const TabBar(
@@ -41,23 +32,14 @@ class _AuthScreenState extends State<AuthScreen> {
               Tab(
                 icon: Icon(Icons.person,
                     color: Color.fromARGB(255, 255, 255, 255)),
-                text: "Registration",
+                text: "Register",
               ),
             ],
-            /*indicatorColor: Color.fromARGB(19, 38, 112, 40),
-            indicatorWeight: 2, */
           ),
         ),
         body: Container(
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-            colors: [
-              Color.fromARGB(255, 255, 255, 255),
-              Color.fromARGB(155, 255, 255, 255),
-            ],
-          )),
+          decoration:
+              const BoxDecoration(color: Color.fromARGB(255, 255, 255, 255)),
           child: const TabBarView(
             children: [
               LoginScreen(),

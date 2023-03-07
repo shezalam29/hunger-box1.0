@@ -19,12 +19,18 @@ class _MySplashScreenState extends State<MySplashScreen> {
       if (firebaseAuth.currentUser != null) {
         bool isVendor = await FBH.isVendor(FBH.currentUser!);
 
-        Navigator.push(context, MaterialPageRoute(builder: (c) {
-          return isVendor ? const VendorHomeScreen() : UserHomeScreen();
-        }));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (c) {
+                  return isVendor ? const VendorHomeScreen() : UserHomeScreen();
+                },
+                fullscreenDialog: true));
       } else {
         Navigator.push(
-            context, MaterialPageRoute(builder: (c) => const AuthScreen()));
+            context,
+            MaterialPageRoute(
+                builder: (c) => const AuthScreen(), fullscreenDialog: true));
       }
     });
   }
@@ -40,14 +46,20 @@ class _MySplashScreenState extends State<MySplashScreen> {
   Widget build(BuildContext context) {
     return Material(
         child: Container(
-            color: Colors.white,
+            color: const Color.fromARGB(255, 120, 130, 100),
             child: Center(
                 child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset("images/splashscreenimage.png"),
-                Image.asset("images/logo.png"),
-                const SizedBox(
+              children: const [
+                Text(
+                  "HUNGER BOX",
+                  style: TextStyle(
+                    color: Color.fromARGB(241, 255, 215, 194),
+                    fontSize: 60,
+                    fontFamily: "Raleway-Bold",
+                  ),
+                ),
+                SizedBox(
                   height: 10,
                 ),
               ],

@@ -21,17 +21,6 @@ class UserHomeScreen extends StatefulWidget {
 }
 
 class _UserHomeScreenState extends State<UserHomeScreen> {
-  final items = [
-    "slider/burger.jpg",
-    "slider/eggstoast.jpg",
-    "slider/fish.jpg",
-    "slider/pestopasta.jpg",
-    "slider/pizzabowl.jpg",
-    "slider/salmon.jpg",
-    "slider/steakchips.jpg",
-    "slider/tomatosoo.jpg",
-    "slider/whitebread.jpg",
-  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,16 +28,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
       appBar: AppBar(
         flexibleSpace: Container(
           decoration: const BoxDecoration(
-              gradient: LinearGradient(
-            colors: [
-              Color.fromARGB(255, 188, 169, 146),
-              Color.fromARGB(255, 120, 130, 100),
-            ],
-            begin: FractionalOffset(0.0, 0.0),
-            end: FractionalOffset(1.0, 0.0),
-            stops: [0.0, 1.0],
-            tileMode: TileMode.clamp,
-          )),
+            color: Color.fromARGB(255, 120, 130, 100),
+          ),
         ),
         title: Text(sharedPreferences.getName() ?? "NO NAME FOUND"),
         centerTitle: true,

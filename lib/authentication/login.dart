@@ -82,9 +82,13 @@ class _LoginScreenState extends State<LoginScreen> {
       });
 
       Navigator.pop(context);
-      Navigator.push(context, MaterialPageRoute(builder: (c) {
-        return _isVendor ? VendorHomeScreen() : UserHomeScreen();
-      }));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (c) {
+                return _isVendor ? VendorHomeScreen() : UserHomeScreen();
+              },
+              fullscreenDialog: true));
     }
   }
 

@@ -121,7 +121,8 @@ class _MyDrawerUserState extends State<MyDrawerUser> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (c) => const AuthScreen()));
+                              builder: (c) => const AuthScreen(),
+                              fullscreenDialog: true));
                     });
                   },
                 ),
