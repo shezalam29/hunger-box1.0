@@ -43,85 +43,49 @@ class _LoginScreenState extends State<LoginScreen> {
           return LoadingDialog(message: "Logging you in");
         });
 
-    await FBH
-        .login(emailController.text.trim(), passwordController.text.trim())
-        .catchError((error) {
+    try {
+      await FBH.login(
+          emailController.text.trim(), passwordController.text.trim());
+    } on FirebaseException catch (e) {
       Navigator.pop(context);
       showDialog(
           context: context,
           builder: (c) {
             return ErrorDialog(
-              message: error.message.toString(),
+              message: e.message.toString(),
             );
           });
-    });
+      return;
+    }
 
     if (FBH.currentUser == null) return;
 
-    bool _isVendor = await FBH.isVendor(FBH.currentUser!);
+    bool isVendor = await FBH.isVendor(FBH.currentUser!);
 
-    if (FBH.currentUser != null) {
-      String nameField, emailField, avatarField;
-      if (_isVendor) {
-        nameField = VendorDoc.name;
-        emailField = VendorDoc.email;
-        avatarField = VendorDoc.avatarUrl;
-      } else {
-        nameField = StudentDoc.name;
-        emailField = StudentDoc.email;
-        avatarField = StudentDoc.avatarUrl;
-      }
-
-      await FBH.getCurrentUserInfo().then((doc) async {
-        Map<String, dynamic> data = doc!.data()!;
-        await sharedPreferences.setPreferenceData(
-            uid: FBH.currentUser!.uid,
-            name: data[nameField],
-            email: data[emailField],
-            avatar: data[avatarField]);
-      });
-
-      Navigator.pop(context);
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (c) {
-                return _isVendor ? VendorHomeScreen() : UserHomeScreen();
-              },
-              fullscreenDialog: true));
-    }
-  }
-
-  // TODO this is a duplicate from registration.dart, find a way to consolidate
-  // into one function.
-  // SharedPreferences Handler?
-  // TODO needs to check who the user is
-  Future readDataAndSetDataLocally(User currentUser) async {
-    if (await FBH.isVendor(currentUser)) {
-      await FirebaseFirestore.instance
-          .collection(vendorCllctn)
-          .doc(currentUser.uid)
-          .get()
-          .then((document) async {
-        await sharedPreferences.setPreferenceData(
-            uid: currentUser.uid,
-            name: document.data()![VendorDoc.name],
-            email: document.data()![VendorDoc.email],
-            avatar: document.data()![VendorDoc.avatarUrl]);
-      });
+    String nameField, emailField, avatarField;
+    if (isVendor) {
+      nameField = VendorDoc.name;
+      emailField = VendorDoc.email;
+      avatarField = VendorDoc.avatarUrl;
     } else {
-      await FirebaseFirestore.instance
-          .collection(studentCllctn)
-          .doc(currentUser.uid)
-          .get()
-          .then((document) async {
-        await sharedPreferences.setPreferenceData(
-            uid: currentUser.uid,
-            name: document.data()![StudentDoc.name],
-            email: document.data()![StudentDoc.email],
-            avatar: document.data()![StudentDoc.avatarUrl]);
-      });
+      nameField = StudentDoc.name;
+      emailField = StudentDoc.email;
+      avatarField = StudentDoc.avatarUrl;
     }
+
+    await FBH.getCurrentUserInfo().then((doc) async {
+      Map<String, dynamic> data = doc!.data()!;
+      await sharedPreferences.setPreferenceData(
+          uid: FBH.currentUser!.uid,
+          name: data[nameField],
+          email: data[emailField],
+          avatar: data[avatarField]);
+    });
+
+    Navigator.pop(context);
+    Navigator.push(context, MaterialPageRoute(builder: (c) {
+      return isVendor ? VendorHomeScreen() : UserHomeScreen();
+    }));
   }
 
   @override

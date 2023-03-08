@@ -4,7 +4,6 @@
 // Alberto
 // Parsha
 // Ana
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hunger_box/fb_handler/fb_handler.dart';
 import 'package:hunger_box/global/global.dart';
@@ -15,8 +14,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   sharedPreferences = await HungerBoxPreferences.getInstance();
   FBH = await FirebaseHandler.create();
-  // TODO Firebase is taking your cached sharedPreferences and trying to log you in, causing potential errors
-  firebaseAuth.signOut();
   runApp(const MyApp());
 }
 

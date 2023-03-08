@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:hunger_box/authentication/auth_screen.dart';
 import 'package:hunger_box/global/global.dart';
 import 'package:hunger_box/uploadScreen/menus_upload.dart';
 
@@ -52,10 +51,9 @@ class _VendorHomeScreenState extends State<VendorHomeScreen> {
           SliverPersistentHeader(
               pinned: true, delegate: TextWidgetHeader(title: "Your Menu")),
           StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection("vendors")
-                .doc(sharedPreferences.getUID())
-                .collection("menus")
+            stream: FBH
+                .getDocument(vendorCllctn, sharedPreferences.getUID()!)
+                .collection(menusCllctn)
                 .snapshots(),
             builder: (context, snapshot) {
               // if not has data: display circular progress

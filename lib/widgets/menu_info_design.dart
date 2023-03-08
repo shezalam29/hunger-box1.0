@@ -1,7 +1,6 @@
 //49
 
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hunger_box/model/menus.dart';
 
 class InfoDesignWidget extends StatefulWidget {
@@ -62,7 +61,7 @@ class _InfoDesignWidgetState extends State<InfoDesignWidget> {
                   ),
                 ),
                 Text(
-                  r"$" + widget.model!.price!,
+                  "\$ ${widget.model!.price!.toStringAsFixed(2)}",
                   style: const TextStyle(
                     overflow: TextOverflow.ellipsis,
                     color: Colors.black,

@@ -1,5 +1,3 @@
-library lib.fb_handler.fb_handler;
-
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -20,6 +18,9 @@ class FirebaseHandler {
   /// Cached path to the avatar image
   late String avatarUrl;
 
+  /// Cached boolean for if current user is vendor
+  bool? _isVendor;
+
   /// Uses a [FirebaseHandler] factory to initalizes the app and return active
   /// handler
   static Future<FirebaseHandler> create() async {
@@ -33,10 +34,18 @@ class FirebaseHandler {
   Future login(String usrName, String psswrd) async {
     await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: usrName, password: psswrd)
-        .then((usrCred) {
+        .then((usrCred) async {
       currentUser = usrCred.user;
       _psswrd = psswrd;
+      _isVendor = await isVendor(usrCred.user!);
     });
+  }
+
+  Future logout() async {
+    await FirebaseAuth.instance.signOut();
+    currentUser = null;
+    _psswrd = "";
+    _isVendor = null;
   }
 
   /// Gets the current logged in user's info
@@ -44,8 +53,8 @@ class FirebaseHandler {
     if (currentUser == null) {
       return null;
     }
-    String cllctn = await isVendor(currentUser!) ? vendorCllctn : studentCllctn;
-    return _getDocument(cllctn, currentUser!.uid);
+    String cllctn = _isVendor! ? vendorCllctn : studentCllctn;
+    return _getDocumentData(cllctn, currentUser!.uid);
   }
 
   /// Register a new Student into the database with a hunterId, email, and password.
@@ -58,6 +67,7 @@ class FirebaseHandler {
         .then((usrCred) {
       currentUser = usrCred.user;
       _psswrd = psswrd;
+      _isVendor = false;
     });
 
     String imgName = DateTime.now().millisecondsSinceEpoch.toString();
@@ -84,6 +94,7 @@ class FirebaseHandler {
         .then((usrCred) {
       currentUser = usrCred.user;
       _psswrd = psswrd;
+      _isVendor = true;
     });
 
     String imgName = DateTime.now().millisecondsSinceEpoch.toString();
@@ -107,23 +118,38 @@ class FirebaseHandler {
         ));
   }
 
-  /// Check whether provided [usr] is a Vendor by checking if they exist within
-  /// the Vendor Collection
-  Future<bool> isVendor(User usr) async {
-    final docRef = FirebaseFirestore.instance.collection(vendorCllctn);
+  Future uploadMenuItem(String vendorDocID, MenuItem m) async {
+    final cllctnRef =
+        getDocument(vendorCllctn, vendorDocID).collection(menusCllctn);
 
-    return docRef.doc(usr.uid).get().then((usr) {
+    await cllctnRef.doc(m.fields[MenusDoc.menuID]).set(m.fields);
+  }
+
+  /// Check whether provided [usr] is a Vendor by checking if they exist within
+  /// the Vendor Collection. Caches the response if there isn't already one
+  Future<bool> isVendor(User usr) async {
+    _isVendor ??= await _getDocumentData(vendorCllctn, usr.uid).then((usr) {
       return usr.exists;
     });
+
+    return _isVendor!;
+  }
+
+  DocumentReference<Map<String, dynamic>> getDocument(
+      String cllctn, String docId) {
+    return getCollection(cllctn).doc(docId);
+  }
+
+  CollectionReference<Map<String, dynamic>> getCollection(String cllctn) {
+    return FirebaseFirestore.instance.collection(cllctn);
   }
 
   // ============================ PRIVATE METHODS ============================
 
-  /// Get the document attached to a [uid] in a [cllctn]
-  Future<DocumentSnapshot<Map<String, dynamic>>> _getDocument(
-      String cllctn, String uid) {
-    final docRef = FirebaseFirestore.instance.collection(cllctn);
-    return docRef.doc(uid).get();
+  /// Get the document attached to a [docId] in a [cllctn]
+  Future<DocumentSnapshot<Map<String, dynamic>>> _getDocumentData(
+      String cllctn, String docId) {
+    return getDocument(cllctn, docId).get();
   }
 
   /// Insert a New user into a [collection] with a key of [key] and [values]

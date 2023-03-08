@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hunger_box/mainScreens/vendor_home_screen.dart';
+import 'package:hunger_box/mainScreens/user_home_screen.dart';
 import 'package:hunger_box/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:hunger_box/widgets/error_dialog.dart';
@@ -76,7 +77,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   // getCurrentLocation
 
   /// Register and Authenticate a new user into the Firebase database
-  // TODO Instead of one big function, maybe have each Sign up button call a different function
   Future<void> registerNewUser() async {
     if (!_isRegistrationFormValid()) {
       return;
@@ -124,12 +124,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     Navigator.pop(context);
   }
   // registerNewUser
-
-  //   Navigator.pop(context);
-  //   //send the user to home page
-  //   ////////////THISSSSSS PART IS IMPORTANT///////////////
-  //   Route newRoute = MaterialPageRoute(builder: (c) => const HomeScreen());
-  //   Navigator.pushReplacement(context, newRoute);
 
   @Deprecated('Used in tutorial, outdated version')
   Future<void> formValidation() async {
@@ -236,13 +230,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       "lat": position!.latitude,
       "lng": position!.longitude,
     });
-
-    //save data locally
-    // sharedPreferences = await SharedPreferences.getInstance();
-    // await sharedPreferences!.setString("uid", currentUser.uid);
-    // await sharedPreferences!.setString("email", currentUser.email.toString());
-    // await sharedPreferences!.setString("name", vendNameController.text.trim());
-    // await sharedPreferences!.setString("photoUrl", vendorImageUrl);
   }
 
   @override
@@ -416,6 +403,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       const EdgeInsets.symmetric(horizontal: 50, vertical: 20)),
               onPressed: () {
                 registerNewUser();
+                Navigator.push(context, MaterialPageRoute(builder: (c) {
+                  return const UserHomeScreen();
+                }));
               },
               child: const Text(
                 "Sign Up",
@@ -558,7 +548,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       const EdgeInsets.symmetric(horizontal: 50, vertical: 20)),
               onPressed: () {
                 registerNewUser();
-                //Navigator.push to HomeScreen
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (c) {
+                  return const VendorHomeScreen();
+                }));
               },
               child: const Text(
                 "Sign Up",

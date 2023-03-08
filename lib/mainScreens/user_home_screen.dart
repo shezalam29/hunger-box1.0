@@ -1,6 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hunger_box/global/global.dart';
 
@@ -10,12 +9,10 @@ import 'package:hunger_box/model/vendors.dart';
 
 import '../widgets/info_design.dart';
 import '../widgets/progress_bar.dart';
-import '../widgets/text_widget.dart';
-
-/// !!!!!!!!!!!!!!!!! THIS IS JUST A COPY OF THE CURRENT VENDOR_HOME_SCREEN !!!!!!!!!!!!!!!!!
-/// for testing purposes
 
 class UserHomeScreen extends StatefulWidget {
+  const UserHomeScreen({super.key});
+
   @override
   State<UserHomeScreen> createState() => _UserHomeScreenState();
 }

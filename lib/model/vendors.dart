@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hunger_box/global/global.dart';
 
 class Vendors {
   String? vendorUID;
@@ -14,18 +14,19 @@ class Vendors {
   });
 
   Vendors.fromJson(Map<String, dynamic> json) {
-    vendorUID = json["vendorUID"];
-    name = json["name"];
-    vendorAvatarUrl = json["vendorAvatarUrl"];
-    email = json["email"];
+    vendorUID = json[VendorDoc.uid];
+    name = json[VendorDoc.name];
+    vendorAvatarUrl = json[VendorDoc.avatarUrl];
+    email = json[VendorDoc.email];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data["vendorUID"] = this.vendorUID;
-    data["name"] = this.name;
-    data["vendorAvatarUrl"] = this.vendorAvatarUrl;
-    data["email"] = this.email;
+    final Map<String, dynamic> data = {
+      VendorDoc.uid: vendorUID,
+      VendorDoc.name: name,
+      VendorDoc.avatarUrl: vendorAvatarUrl,
+      VendorDoc.email: email,
+    };
 
     return data;
   }

@@ -365,21 +365,18 @@ class _MenusUploadState extends State<MenusUpload> {
 
   //48
   saveInfo(String downloadURL) {
-    final ref = FirebaseFirestore.instance
-        .collection("vendors")
-        .doc(sharedPreferences.getUID())
-        .collection("menus");
-
-    ref.doc(uniqueIdName).set({
-      "menuID": uniqueIdName,
-      "vendorUID": sharedPreferences.getUID(),
-      "menuTitle": titleController.text.toString(),
-      "menuInfo": menuInfoController.text.toString(),
-      "price": priceController.text.toString(),
-      "datePublished": DateTime.now(),
-      "status": "available",
-      "thumbnailUrl": downloadURL,
-    });
+    FBH.uploadMenuItem(
+        sharedPreferences.getUID()!,
+        MenuItem(
+          menuID: uniqueIdName,
+          vendorUID: sharedPreferences.getUID()!,
+          menuTitle: titleController.text.toString(),
+          menuInfo: menuInfoController.text.toString(),
+          price: double.parse(priceController.text),
+          datePublished: DateTime.now(),
+          status: "available",
+          thumbnailUrl: downloadURL,
+        ));
 
     clearMenuUploadForm();
     setState(() {
