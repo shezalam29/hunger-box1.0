@@ -1,10 +1,12 @@
 //49
 
 import 'package:flutter/material.dart';
-import 'package:hunger_box/model/menus.dart';
+
+// import 'package:hunger_box/model/menus.dart';
+import 'package:hunger_box/global/global.dart';
 
 class InfoDesignWidget extends StatefulWidget {
-  Menus? model;
+  MenuItem? model;
   BuildContext? context;
 
   InfoDesignWidget({this.model, this.context});
@@ -41,7 +43,7 @@ class _InfoDesignWidgetState extends State<InfoDesignWidget> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12.0),
                     child: Image.network(
-                      widget.model!.thumbnailUrl!,
+                      widget.model!.thumbnailUrl,
                       height: 120.0,
                       width: 200,
                       fit: BoxFit.cover,
@@ -52,7 +54,7 @@ class _InfoDesignWidgetState extends State<InfoDesignWidget> {
                   height: 1.0,
                 ),
                 Text(
-                  widget.model!.menuTitle!,
+                  widget.model!.menuTitle,
                   style: const TextStyle(
                     overflow: TextOverflow.ellipsis, // text overflow
                     color: Colors.black,
@@ -61,7 +63,7 @@ class _InfoDesignWidgetState extends State<InfoDesignWidget> {
                   ),
                 ),
                 Text(
-                  "\$ ${widget.model!.price!.toStringAsFixed(2)}",
+                  "\$${widget.model!.priceStr}",
                   style: const TextStyle(
                     overflow: TextOverflow.ellipsis,
                     color: Colors.black,
@@ -70,7 +72,7 @@ class _InfoDesignWidgetState extends State<InfoDesignWidget> {
                   ),
                 ),
                 Text(
-                  widget.model!.menuInfo!,
+                  widget.model!.menuInfo,
                   style: const TextStyle(
                     overflow: TextOverflow.ellipsis,
                     color: Color.fromARGB(255, 120, 130, 100),

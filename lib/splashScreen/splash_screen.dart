@@ -17,7 +17,7 @@ class _MySplashScreenState extends State<MySplashScreen> {
   startTimer() {
     Timer(const Duration(seconds: 1), () async {
       if (firebaseAuth.currentUser != null) {
-        bool isVendor = await FBH.isVendor(FBH.currentUser!);
+        bool isVendor = await FBH.isVendor;
 
         Navigator.push(
             context,

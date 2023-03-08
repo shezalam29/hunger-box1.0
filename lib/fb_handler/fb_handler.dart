@@ -7,7 +7,7 @@ import 'package:hunger_box/global/global.dart';
 
 class FirebaseHandler {
   /// Singleton to insure only single user is logged on
-  static final FirebaseHandler _self = FirebaseHandler._();
+  static FirebaseHandler? _self;
 
   /// Cached local password
   late String _psswrd;
@@ -21,26 +21,45 @@ class FirebaseHandler {
   /// Cached boolean for if current user is vendor
   bool? _isVendor;
 
+  /// Getter for [_isVendor]
+  /// If it hasn't been set for some reason, queries the user, caches the
+  /// variable, and then returns it.
+  Future<bool> get isVendor async {
+    if (currentUser == null) return false;
+    _isVendor ??= await _isUserVendor(currentUser!);
+    return _isVendor!;
+  }
+
   /// Uses a [FirebaseHandler] factory to initalizes the app and return active
   /// handler
   static Future<FirebaseHandler> create() async {
     await Firebase.initializeApp();
-    return _self;
+    _self ??= FirebaseHandler._();
+    return _self!;
   }
 
-  FirebaseHandler._();
+  /// Hidden constructor.
+  /// Sets current user if there is a cached one in the [FirebaseAuth]
+  FirebaseHandler._() {
+    if (firebaseAuth.currentUser != null) {
+      currentUser = firebaseAuth.currentUser;
+    }
+  }
 
   /// Log in to Firebase with [usrName] and [psswrd].
   Future login(String usrName, String psswrd) async {
+    print("trying to log in");
     await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: usrName, password: psswrd)
         .then((usrCred) async {
+      print("success");
       currentUser = usrCred.user;
       _psswrd = psswrd;
-      _isVendor = await isVendor(usrCred.user!);
+      _isVendor = await _isUserVendor(usrCred.user!);
     });
   }
 
+  /// Log out of Firebase and unset any local variables
   Future logout() async {
     await FirebaseAuth.instance.signOut();
     currentUser = null;
@@ -76,13 +95,13 @@ class FirebaseHandler {
     await _insertNewUsrInfo(
         studentCllctn,
         currentUser!.uid,
-        _mapStudentFields(
+        Student(
           currentPoints: 0,
           email: email.trim(),
           firstName: studName.trim(),
           uid: currentUser!.uid,
           avatarUrl: avatarUrl,
-        ));
+        ).fields);
   }
 
   /// Register a new Vendor into the database
@@ -103,20 +122,48 @@ class FirebaseHandler {
     String? currUserId = currentUser?.uid;
 
     await _insertNewUsrInfo(
-        vendorCllctn,
-        currUserId!,
-        _mapVendorFields(
-          address: address.trim(),
-          earnings: 0,
-          vendorEmail: email.trim(),
-          vendorAvatarUrl: avatarUrl,
-          lat: lat,
-          lng: lng,
-          status: "approved",
-          vendorName: name.trim(),
-          vendorUID: currUserId,
-        ));
+      vendorCllctn,
+      currUserId!,
+      Vendor(
+        address: address.trim(),
+        earnings: 0,
+        vendorEmail: email.trim(),
+        vendorAvatarUrl: avatarUrl,
+        lat: lat,
+        lng: lng,
+        status: "approved",
+        vendorName: name.trim(),
+        vendorUID: currUserId,
+      ).fields,
+    );
   }
+
+  //------------------------------ CART METHODS ------------------------------
+  Future addItemToCurrentUserCart(CartItem ci) async {
+    var docRef = getDocument(studentCllctn, currentUser!.uid);
+    await docRef.collection(cartCllctn).add(ci.fields);
+  }
+
+  Future removeItemFromCurrentUserCart(String cartItemId) async {
+    var docRef = FirebaseFirestore.instance
+        .collection(studentCllctn)
+        .doc(currentUser!.uid);
+    await docRef.collection(cartCllctn).doc(cartItemId).delete();
+  }
+
+  Future emptyCurrentUserCart() async {
+    var snapshot = FirebaseFirestore.instance
+        .collection(studentCllctn)
+        .doc(currentUser!.uid)
+        .collection(cartCllctn)
+        .snapshots();
+    snapshot.forEach((querySnapshot) {
+      for (var doc in querySnapshot.docs) {
+        doc.reference.delete();
+      }
+    });
+  }
+  // CART METHODS
 
   Future uploadMenuItem(String vendorDocID, MenuItem m) async {
     final cllctnRef =
@@ -125,19 +172,9 @@ class FirebaseHandler {
     await cllctnRef.doc(m.fields[MenusDoc.menuID]).set(m.fields);
   }
 
-  /// Check whether provided [usr] is a Vendor by checking if they exist within
-  /// the Vendor Collection. Caches the response if there isn't already one
-  Future<bool> isVendor(User usr) async {
-    _isVendor ??= await _getDocumentData(vendorCllctn, usr.uid).then((usr) {
-      return usr.exists;
-    });
-
-    return _isVendor!;
-  }
-
   DocumentReference<Map<String, dynamic>> getDocument(
       String cllctn, String docId) {
-    return getCollection(cllctn).doc(docId);
+    return FirebaseFirestore.instance.collection(cllctn).doc(docId);
   }
 
   CollectionReference<Map<String, dynamic>> getCollection(String cllctn) {
@@ -145,6 +182,12 @@ class FirebaseHandler {
   }
 
   // ============================ PRIVATE METHODS ============================
+  /// Helper function to check if
+  Future<bool> _isUserVendor(User u) async {
+    return await _getDocumentData(vendorCllctn, u.uid).then((usr) {
+      return usr.exists;
+    });
+  }
 
   /// Get the document attached to a [docId] in a [cllctn]
   Future<DocumentSnapshot<Map<String, dynamic>>> _getDocumentData(
@@ -178,57 +221,5 @@ class FirebaseHandler {
     fstorage.TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
     String url = await taskSnapshot.ref.getDownloadURL();
     return url;
-  }
-
-  /// Map variables to the student fields safely.
-  /// If a field is not provided or does not exist (yet), then it can be set
-  /// to a default value
-  Map<String, dynamic> _mapStudentFields({
-    int currentPoints = 0,
-    String email = "",
-    String firstName = "",
-    String avatarUrl = "not found",
-    int hunterId = -1,
-    String uid = "NOTSET",
-  }) {
-    Map<String, dynamic> fields = {
-      StudentDoc.points: currentPoints,
-      StudentDoc.email: email,
-      StudentDoc.name: firstName,
-      StudentDoc.avatarUrl: avatarUrl,
-      StudentDoc.uid: uid,
-      // STUDENT.HUNTERID: hunterId, // IMPLEMENT LATER
-    };
-
-    return fields;
-  }
-
-  /// Map variables to the Vendor fields safely.
-  /// If a field is not provided or does not exist (yet), then it can be set
-  /// to a default value
-  Map<String, dynamic> _mapVendorFields({
-    address = "",
-    earnings = 0,
-    vendorEmail = "",
-    vendorAvatarUrl = "",
-    lat = -1,
-    lng = -1,
-    status = "",
-    vendorName = "",
-    vendorUID = "",
-  }) {
-    Map<String, dynamic> fields = {
-      VendorDoc.address: address,
-      VendorDoc.earnings: earnings,
-      VendorDoc.lat: lat,
-      VendorDoc.lng: lng,
-      VendorDoc.status: status,
-      VendorDoc.avatarUrl: vendorAvatarUrl,
-      VendorDoc.email: vendorEmail,
-      VendorDoc.name: vendorName,
-      VendorDoc.uid: vendorUID,
-    };
-
-    return fields;
   }
 }

@@ -70,7 +70,7 @@ class _VendorHomeScreenState extends State<VendorHomeScreen> {
 
                       // staggeredTileBuilder: (c) => StaggeredTile.fit(1),
                       itemBuilder: (context, index) {
-                        Menus model = Menus.fromJson(
+                        MenuItem model = MenuItem.fromJson(
                           snapshot.data!.docs[index].data()!
                               as Map<String, dynamic>,
                         );

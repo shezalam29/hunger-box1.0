@@ -112,7 +112,8 @@ class _MyDrawerState extends State<MyDrawer> {
                     style: TextStyle(color: Colors.black),
                   ),
                   onTap: () {
-                    firebaseAuth.signOut().then((value) {
+                    FBH.logout();
+                    sharedPreferences.clearPreferenceData().then((_) {
                       Navigator.push(
                           context,
                           MaterialPageRoute(

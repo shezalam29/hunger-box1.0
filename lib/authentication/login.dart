@@ -60,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (FBH.currentUser == null) return;
 
-    bool isVendor = await FBH.isVendor(FBH.currentUser!);
+    bool isVendor = await FBH.isVendor;
 
     String nameField, emailField, avatarField;
     if (isVendor) {

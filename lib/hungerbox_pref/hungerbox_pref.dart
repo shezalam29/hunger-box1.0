@@ -1,6 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
-
-external Type get runtimeType;
+import 'package:hunger_box/global/global.dart';
 
 /// Preferences wrapper for HungerBox project
 class HungerBoxPreferences {
@@ -8,10 +7,11 @@ class HungerBoxPreferences {
   static late SharedPreferences _preferences;
 
   /// Field Variables
-  static const String UID = "uid";
-  static const String NAME = "name";
-  static const String EMAIL = "email";
-  static const String AVATAR = "avatarUrl";
+  final String _uid = "uid";
+  final String _name = "name";
+  final String _email = "email";
+  final String _avatar = "avatarUrl";
+  final String _cart = "cart";
 
   static Future<HungerBoxPreferences> getInstance() async {
     if (_singleton != null) return _singleton!;
@@ -29,36 +29,48 @@ class HungerBoxPreferences {
     await setAvatar(avatar);
   }
 
+  Future<bool> clearPreferenceData() async {
+    return await _preferences.clear();
+  }
+
   Future setUID(String val) async {
-    await _preferences.setString(UID, val);
+    await _preferences.setString(_uid, val);
   }
 
   Future setName(String val) async {
-    await _preferences.setString(NAME, val);
+    await _preferences.setString(_name, val);
   }
 
   Future setEmail(String val) async {
-    await _preferences.setString(EMAIL, val);
+    await _preferences.setString(_email, val);
   }
 
   Future setAvatar(String val) async {
-    await _preferences.setString(AVATAR, val);
+    await _preferences.setString(_avatar, val);
+  }
+
+  Future initCart() async {
+    await _preferences.setStringList(_cart, List<String>.empty());
+  }
+
+  Future emptyCart() async {
+    await initCart();
   }
 
   String? getUID() {
-    return _preferences.getString(UID);
+    return _preferences.getString(_uid);
   }
 
   String? getName() {
-    return _preferences.getString(NAME);
+    return _preferences.getString(_name);
   }
 
   String? getEmail() {
-    return _preferences.getString(EMAIL);
+    return _preferences.getString(_email);
   }
 
   String? getAvatar() {
-    return _preferences.getString(AVATAR);
+    return _preferences.getString(_avatar);
   }
 
   HungerBoxPreferences._();
