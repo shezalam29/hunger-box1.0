@@ -48,11 +48,9 @@ class FirebaseHandler {
 
   /// Log in to Firebase with [usrName] and [psswrd].
   Future login(String usrName, String psswrd) async {
-    print("trying to log in");
     await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: usrName, password: psswrd)
         .then((usrCred) async {
-      print("success");
       currentUser = usrCred.user;
       _psswrd = psswrd;
       _isVendor = await _isUserVendor(usrCred.user!);
@@ -90,7 +88,7 @@ class FirebaseHandler {
     });
 
     String imgName = DateTime.now().millisecondsSinceEpoch.toString();
-    avatarUrl = await _uploadAvatarImage(imgName, imgPath, studentCllctn);
+    avatarUrl = await uploadImage(imgName, imgPath, studentCllctn);
 
     await _insertNewUsrInfo(
         studentCllctn,
@@ -117,7 +115,7 @@ class FirebaseHandler {
     });
 
     String imgName = DateTime.now().millisecondsSinceEpoch.toString();
-    avatarUrl = await _uploadAvatarImage(imgName, imagePath, vendorCllctn);
+    avatarUrl = await uploadImage(imgName, imagePath, vendorCllctn);
 
     String? currUserId = currentUser?.uid;
 
@@ -181,6 +179,20 @@ class FirebaseHandler {
     return FirebaseFirestore.instance.collection(cllctn);
   }
 
+  /// Upload an avatar image into [fstorage] and return the resulting path
+  Future<String> uploadImage(
+      String imgName, String imgPath, String collection) async {
+    fstorage.Reference reference = fstorage.FirebaseStorage.instance
+        .ref()
+        .child(collection)
+        .child(imgName);
+
+    fstorage.UploadTask uploadTask = reference.putFile(File(imgPath));
+    fstorage.TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
+    String url = await taskSnapshot.ref.getDownloadURL();
+    return url;
+  }
+
   // ============================ PRIVATE METHODS ============================
   /// Helper function to check if
   Future<bool> _isUserVendor(User u) async {
@@ -207,19 +219,5 @@ class FirebaseHandler {
       }
     });
     return true;
-  }
-
-  /// Upload an avatar image into [fstorage] and return the resulting path
-  Future<String> _uploadAvatarImage(
-      String imgName, String imgPath, String collection) async {
-    fstorage.Reference reference = fstorage.FirebaseStorage.instance
-        .ref()
-        .child(collection)
-        .child(imgName);
-
-    fstorage.UploadTask uploadTask = reference.putFile(File(imgPath));
-    fstorage.TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
-    String url = await taskSnapshot.ref.getDownloadURL();
-    return url;
   }
 }

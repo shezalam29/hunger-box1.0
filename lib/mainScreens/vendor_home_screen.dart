@@ -1,15 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:hunger_box/global/global.dart';
-import 'package:hunger_box/uploadScreen/menus_upload.dart';
+import 'package:hunger_box/uploadScreen/menus_upload_form.dart';
 
 import '../widgets/drawer.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:hunger_box/model/menus.dart';
 
 import '../widgets/menu_info_design.dart';
 import '../widgets/progress_bar.dart';
 import '../widgets/text_widget.dart';
+
+import "package:image_picker/image_picker.dart";
 
 class VendorHomeScreen extends StatefulWidget {
   const VendorHomeScreen({super.key});
@@ -36,8 +37,45 @@ class _VendorHomeScreenState extends State<VendorHomeScreen> {
           IconButton(
             icon: const Icon(Icons.post_add),
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (c) => const MenusUpload()));
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return SimpleDialog(
+                    title: const Text(
+                      "Item Image",
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.bold),
+                    ),
+                    children: [
+                      SimpleDialogOption(
+                        // ignore: sort_child_properties_last
+                        child: const Text(
+                          "Capture with Camera",
+                          style:
+                              TextStyle(color: Color.fromARGB(255, 95, 93, 93)),
+                        ),
+                        onPressed: () => pickImageAndRedirect(ImageSource.camera),
+                      ),
+                      SimpleDialogOption(
+                        // ignore: sort_child_properties_last
+                        child: const Text(
+                          "Choose from Gallery",
+                          style:
+                              TextStyle(color: Color.fromARGB(255, 95, 93, 93)),
+                        ),
+                        onPressed: () => pickImageAndRedirect(ImageSource.gallery),
+                      ),
+                      SimpleDialogOption(
+                        child: const Text(
+                          "Cancel",
+                          style: TextStyle(color: Colors.red),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ],
+                  );
+                },
+              );
             },
           ),
         ],
@@ -51,8 +89,10 @@ class _VendorHomeScreenState extends State<VendorHomeScreen> {
           SliverPersistentHeader(
               pinned: true, delegate: TextWidgetHeader(title: "Your Menu")),
           StreamBuilder<QuerySnapshot>(
-            stream: FBH
-                .getDocument(vendorCllctn, sharedPreferences.getUID()!)
+            // TODO need to fix this to run through FBH
+            stream: FirebaseFirestore.instance
+                .collection(vendorCllctn)
+                .doc(FBH.currentUser!.uid)
                 .collection(menusCllctn)
                 .snapshots(),
             builder: (context, snapshot) {
@@ -86,5 +126,25 @@ class _VendorHomeScreenState extends State<VendorHomeScreen> {
         ]),
       ),
     );
+  }
+
+  final ImagePicker _picker = ImagePicker();
+
+  pickImageAndRedirect(ImageSource im) async {
+    Navigator.pop(context);
+    await _picker
+        .pickImage(
+      source: im,
+      maxHeight: 720,
+      maxWidth: 1280,
+    )
+        .then((img) {
+      if (img != null) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (c) => MenusUploadForm(imageXFile: img)));
+      }
+    });
   }
 }
