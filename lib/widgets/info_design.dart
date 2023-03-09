@@ -28,7 +28,7 @@ class _InfoDesignWidgetState extends State<InfoDesignWidget> {
         child: Padding(
           padding: const EdgeInsets.all(5.0),
           child: Container(
-            height: 220,
+            height: 300,
             width: MediaQuery.of(context).size.width,
             child: Column(
               crossAxisAlignment:
@@ -49,6 +49,7 @@ class _InfoDesignWidgetState extends State<InfoDesignWidget> {
                 const SizedBox(
                   height: 10.0,
                 ),
+
                 Text(
                   widget.model!.name!,
                   style: const TextStyle(
@@ -57,6 +58,7 @@ class _InfoDesignWidgetState extends State<InfoDesignWidget> {
                     //fontFamily: "Raleway-SemiBold",
                   ),
                 ),
+
                 Text(
                   widget.model!.email!,
                   style: const TextStyle(
