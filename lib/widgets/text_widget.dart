@@ -14,7 +14,7 @@ class TextWidgetHeader extends SliverPersistentHeaderDelegate {
     return InkWell(
         child: Container(
             decoration: const BoxDecoration(
-              color: Color.fromARGB(255, 202, 189, 171),
+              color: Color.fromARGB(255, 80, 82, 71),
             ),
             height: 80.0,
             width: MediaQuery.of(context).size.width,
@@ -26,9 +26,8 @@ class TextWidgetHeader extends SliverPersistentHeaderDelegate {
                   maxLines: 2,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
-                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                     fontSize: 25,
-                    letterSpacing: 1,
                   ),
                 ),
               ),

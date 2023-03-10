@@ -12,14 +12,14 @@ import '../widgets/text_widget.dart';
 
 import "package:image_picker/image_picker.dart";
 
-class ItemsScreen extends StatefulWidget {
-  const ItemsScreen({super.key});
+class VendorItemsScreen extends StatefulWidget {
+  const VendorItemsScreen({super.key});
 
   @override
-  State<ItemsScreen> createState() => _ItemsScreenState();
+  State<VendorItemsScreen> createState() => _VendorItemsScreenState();
 }
 
-class _ItemsScreenState extends State<ItemsScreen> {
+class _VendorItemsScreenState extends State<VendorItemsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +30,8 @@ class _ItemsScreenState extends State<ItemsScreen> {
             color: Color.fromARGB(255, 120, 130, 100),
           ),
         ),
-        title: const Text("Hunger Box"),
+        title: const Text(
+            "Hunger Box"), // needs to be changed to reflect the vendor name the buyer clicked on
         centerTitle: true,
         automaticallyImplyLeading: true,
       ),
@@ -41,7 +42,7 @@ class _ItemsScreenState extends State<ItemsScreen> {
         //margin: const EdgeInsets.only(left: 6.0, right: 6.0),
         child: CustomScrollView(slivers: [
           SliverPersistentHeader(
-              pinned: true, delegate: TextWidgetHeader(title: "Your Menu")),
+              pinned: true, delegate: TextWidgetHeader(title: "Menu")),
           StreamBuilder<QuerySnapshot>(
             // TODO need to fix this to run through FBH
             stream: FirebaseFirestore.instance

@@ -30,6 +30,38 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
         title: Text(sharedPreferences.getName() ?? "NO NAME FOUND"),
         centerTitle: true,
         automaticallyImplyLeading: true,
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.shopping_bag_sharp,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              // send user to cart screen
+            },
+          ),
+          // Positioned(
+          //   child: Stack(
+          //     children: const [
+          //       Icon(
+          //         Icons.brightness_1,
+          //         size: 20.0,
+          //         color: Colors.green,
+          //       ),
+          //       // Positioned(
+          //       //   top: 3,
+          //       //   right: 5,
+          //       //   child: Center(
+          //       //     child: Text(
+          //       //       "0",
+          //       //       style: TextStyle(color: Colors.white, fontSize: 12),
+          //       //     ),
+          //       //   ),
+          //       // ),
+          //     ],
+          //   ),
+          // ),
+        ],
       ),
       body: CustomScrollView(
         slivers: [

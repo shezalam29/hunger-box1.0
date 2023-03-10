@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hunger_box/mainScreens/user_items_screen.dart';
 import 'package:hunger_box/model/vendors.dart';
 
 class VendorsDesignWidget extends StatefulWidget {
@@ -15,7 +16,7 @@ class _VendorsDesignWidgetState extends State<VendorsDesignWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(8),
+      margin: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
       decoration: BoxDecoration(
         border: Border.all(
           color: const Color.fromARGB(255, 153, 153, 153),
@@ -24,11 +25,17 @@ class _VendorsDesignWidgetState extends State<VendorsDesignWidget> {
         borderRadius: BorderRadius.circular(15),
       ),
       child: InkWell(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (c) => UserItemsScreen(model: widget.model)));
+        },
         splashColor: const Color.fromARGB(255, 255, 255, 255),
         child: Padding(
           padding: const EdgeInsets.all(5.0),
           child: Container(
-            height: 300,
+            height: 220,
             width: MediaQuery.of(context).size.width,
             child: Column(
               crossAxisAlignment:

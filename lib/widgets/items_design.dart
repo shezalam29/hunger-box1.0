@@ -19,7 +19,7 @@ class _ItemsDesignWidgetState extends State<ItemsDesignWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(8),
+      margin: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
       decoration: BoxDecoration(
         border: Border.all(
           color: Colors.grey,
@@ -32,7 +32,7 @@ class _ItemsDesignWidgetState extends State<ItemsDesignWidget> {
         child: Padding(
           padding: const EdgeInsets.all(5.0),
           child: Container(
-            height: 185,
+            height: 190,
             width: MediaQuery.of(context).size.width,
             child: Column(
               crossAxisAlignment:
