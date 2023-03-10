@@ -10,8 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:hunger_box/widgets/error_dialog.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:hunger_box/widgets/loading_dialog.dart';
-import 'package:firebase_storage/firebase_storage.dart' as fstorage;
-
 import '../global/global.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -124,7 +122,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     Navigator.pop(context);
   }
   // registerNewUser
-  
+
   @override
   Widget build(BuildContext context) {
     if (!_isVendor) {

@@ -1,5 +1,4 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:hunger_box/global/global.dart';
 
 /// Preferences wrapper for HungerBox project
 class HungerBoxPreferences {

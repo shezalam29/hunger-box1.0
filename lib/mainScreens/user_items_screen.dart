@@ -8,7 +8,6 @@ import 'package:hunger_box/uploadScreen/items_upload_form.dart';
 import '../widgets/drawer.dart';
 
 import '../widgets/items_design.dart';
-import '../widgets/vendors_design.dart';
 import '../widgets/progress_bar.dart';
 import '../widgets/text_widget.dart';
 
