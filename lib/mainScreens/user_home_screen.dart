@@ -9,6 +9,8 @@ import 'package:hunger_box/model/vendors.dart';
 import '../widgets/vendors_design.dart';
 import '../widgets/progress_bar.dart';
 
+import 'package:badges/badges.dart' as badges;
+
 class UserHomeScreen extends StatefulWidget {
   const UserHomeScreen({super.key});
 
@@ -27,40 +29,64 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
             color: Color.fromARGB(255, 120, 130, 100),
           ),
         ),
-        title: Text(sharedPreferences.getName() ?? "NO NAME FOUND"),
+        title: const Text("Home"),
         centerTitle: true,
         automaticallyImplyLeading: true,
         actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.shopping_bag_sharp,
-              color: Colors.white,
+          Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: badges.Badge(
+              position: badges.BadgePosition.topEnd(top: -20, end: -10),
+              onTap: () {
+                print('Cart button was tapped');
+              },
+              badgeAnimation: const badges.BadgeAnimation.rotation(
+                animationDuration: Duration(seconds: 1),
+                loopAnimation: false,
+                curve: Curves.fastOutSlowIn,
+                colorChangeAnimationCurve: Curves.easeInCubic,
+              ),
+              badgeContent: const Text(
+                  '3'), // change this to reflect how many items are in the cart
+              child: const Icon(Icons.shopping_basket_sharp),
             ),
-            onPressed: () {
-              // send user to cart screen
-            },
           ),
-          // Positioned(
-          //   child: Stack(
-          //     children: const [
-          //       Icon(
-          //         Icons.brightness_1,
-          //         size: 20.0,
-          //         color: Colors.green,
+          // Stack(
+          //   children: [
+          //     IconButton(
+          //       icon: const Icon(
+          //         Icons.shopping_bag_sharp,
+          //         color: Colors.white,
           //       ),
-          //       // Positioned(
-          //       //   top: 3,
-          //       //   right: 5,
-          //       //   child: Center(
-          //       //     child: Text(
-          //       //       "0",
-          //       //       style: TextStyle(color: Colors.white, fontSize: 12),
-          //       //     ),
-          //       //   ),
-          //       // ),
-          //     ],
-          //   ),
-          // ),
+          //       onPressed: () {
+          //         // send user to cart screen
+          //       },
+          //     ),
+          //     Positioned(
+          //       child: Stack(
+          //         children: const [
+          //           Icon(
+          //             Icons.brightness_1,
+          //             size: 20.0,
+          //             color: Colors.white,
+          //           ),
+          //           Positioned(
+          //             top: 3,
+          //             right: 5,
+          //             child: Center(
+          //               child: Text(
+          //                 "0",
+          //                 style: TextStyle(
+          //                     color: Color.fromARGB(255, 120, 130, 100),
+          //                     fontSize: 12),
+          //               ),
+          //             ),
+          //           ),
+          //         ],
+          //       ),
+          //     ),
+          //   ],
+          // )
         ],
       ),
       body: CustomScrollView(

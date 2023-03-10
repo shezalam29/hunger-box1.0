@@ -6,7 +6,7 @@ circularProgress() {
       padding: const EdgeInsets.only(top: 12),
       child: const CircularProgressIndicator(
         valueColor: AlwaysStoppedAnimation(
-          Colors.blue,
+          Color.fromARGB(255, 120, 130, 100),
         ),
       ));
 }
@@ -19,7 +19,7 @@ linearProgress() {
     child: const LinearProgressIndicator(
       backgroundColor: Color.fromARGB(255, 188, 169, 146),
       valueColor: AlwaysStoppedAnimation(
-        Colors.blue,
+        Color.fromARGB(255, 120, 130, 100),
       ),
     ),
   );

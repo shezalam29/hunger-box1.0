@@ -7,7 +7,7 @@ import 'package:hunger_box/uploadScreen/items_upload_form.dart';
 
 import '../widgets/drawer.dart';
 
-import '../widgets/items_design.dart';
+import '../widgets/user_items_design.dart';
 import '../widgets/progress_bar.dart';
 import '../widgets/text_widget.dart';
 
@@ -25,48 +25,60 @@ class _UserItemsScreenState extends State<UserItemsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const MyDrawer(),
+      //drawer: const MyDrawer(),
       appBar: AppBar(
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             color: Color.fromARGB(255, 120, 130, 100),
           ),
         ),
-        title: const Text(
-            "Hunger Box"), // needs to be changed to reflect the vendor name the buyer clicked on
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Text(widget.model!.name.toString() +
+            "'s menu"), // needs to be changed to reflect the vendor name the buyer clicked on
         centerTitle: true,
         automaticallyImplyLeading: true,
         actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.shopping_bag_sharp,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              // send user to cart screen
-            },
+          Stack(
+            children: [
+              IconButton(
+                icon: const Icon(
+                  Icons.shopping_bag_sharp,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  // send user to cart screen
+                },
+              ),
+              Positioned(
+                child: Stack(
+                  children: const [
+                    Icon(
+                      Icons.brightness_1,
+                      size: 20.0,
+                      color: Colors.white,
+                    ),
+                    Positioned(
+                      top: 3,
+                      right: 5,
+                      child: Center(
+                        child: Text(
+                          "0",
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 120, 130, 100),
+                              fontSize: 12),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          // Positioned(
-          //   child: Stack(
-          //     children: const [
-          //       Icon(
-          //         Icons.brightness_1,
-          //         size: 20.0,
-          //         color: Colors.green,
-          //       ),
-          //       // Positioned(
-          //       //   top: 3,
-          //       //   right: 5,
-          //       //   child: Center(
-          //       //     child: Text(
-          //       //       "0",
-          //       //       style: TextStyle(color: Colors.white, fontSize: 12),
-          //       //     ),
-          //       //   ),
-          //       // ),
-          //     ],
-          //   ),
-          // ),
         ],
       ),
 
@@ -75,10 +87,10 @@ class _UserItemsScreenState extends State<UserItemsScreen> {
       body: Container(
         //margin: const EdgeInsets.only(left: 6.0, right: 6.0),
         child: CustomScrollView(slivers: [
-          SliverPersistentHeader(
-              pinned: true,
-              delegate: TextWidgetHeader(
-                  title: widget.model!.name.toString() + "'s menu")),
+          // SliverPersistentHeader(
+          //     pinned: true,
+          //     delegate: TextWidgetHeader(
+          //         title: widget.model!.name.toString() + "'s menu")),
           StreamBuilder<QuerySnapshot>(
             // TODO need to fix this to run through FBH
             stream: FirebaseFirestore.instance
@@ -105,7 +117,7 @@ class _UserItemsScreenState extends State<UserItemsScreen> {
                           snapshot.data!.docs[index].data()!
                               as Map<String, dynamic>,
                         );
-                        return ItemsDesignWidget(
+                        return UserItemsDesignWidget(
                           model: model,
                           context: context,
                         );

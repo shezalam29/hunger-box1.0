@@ -42,6 +42,7 @@ class Items {
     data["vendorUID"] = vendorUID;
     data["itemTitle"] = itemTitle;
     data["itemInfo"] = itemInfo;
+    data["itemInfoLong"] = itemInfoLong;
     data["price"] = price;
     data["datePublished"] = datePublished;
     data["thumbnailUrl"] = thumbnailUrl;

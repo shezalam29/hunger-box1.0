@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:hunger_box/global/global.dart';
 import 'package:hunger_box/uploadScreen/items_upload_form.dart';
+import 'package:hunger_box/widgets/vendor_items_design.dart';
 
 import '../widgets/drawer.dart';
 
-import '../widgets/items_design.dart';
+//import '../widgets/user_items_design.dart';
 import '../widgets/progress_bar.dart';
 import '../widgets/text_widget.dart';
 
@@ -116,7 +117,7 @@ class _VendorHomeScreenState extends State<VendorHomeScreen> {
                           snapshot.data!.docs[index].data()!
                               as Map<String, dynamic>,
                         );
-                        return ItemsDesignWidget(
+                        return VendorItemsDesignWidget(
                           model: model,
                           context: context,
                         );

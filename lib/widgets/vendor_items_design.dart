@@ -4,18 +4,20 @@ import 'package:flutter/material.dart';
 
 // import 'package:hunger_box/model/menus.dart';
 import 'package:hunger_box/global/global.dart';
+import 'package:hunger_box/mainScreens/item_details_screen.dart';
 
-class ItemsDesignWidget extends StatefulWidget {
+class VendorItemsDesignWidget extends StatefulWidget {
   MenuItem? model;
   BuildContext? context;
 
-  ItemsDesignWidget({this.model, this.context});
+  VendorItemsDesignWidget({this.model, this.context});
 
   @override
-  State<ItemsDesignWidget> createState() => _ItemsDesignWidgetState();
+  State<VendorItemsDesignWidget> createState() =>
+      _VendorItemsDesignWidgetState();
 }
 
-class _ItemsDesignWidgetState extends State<ItemsDesignWidget> {
+class _VendorItemsDesignWidgetState extends State<VendorItemsDesignWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -28,6 +30,7 @@ class _ItemsDesignWidgetState extends State<ItemsDesignWidget> {
         borderRadius: BorderRadius.circular(12.0),
       ),
       child: InkWell(
+        onTap: () {},
         splashColor: const Color.fromARGB(255, 139, 139, 139),
         child: Padding(
           padding: const EdgeInsets.all(5.0),
