@@ -34,12 +34,9 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
         automaticallyImplyLeading: true,
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.only(right: 8, top: 8),
             child: badges.Badge(
-              position: badges.BadgePosition.topEnd(top: -20, end: -10),
-              onTap: () {
-                print('Cart button was tapped');
-              },
+              position: badges.BadgePosition.topEnd(top: 0, end: 0),
               badgeAnimation: const badges.BadgeAnimation.rotation(
                 animationDuration: Duration(seconds: 1),
                 loopAnimation: false,
@@ -48,7 +45,11 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
               ),
               badgeContent: const Text(
                   '3'), // change this to reflect how many items are in the cart
-              child: const Icon(Icons.shopping_basket_sharp),
+              child: IconButton(
+                  icon: const Icon(Icons.shopping_cart),
+                  onPressed: () {
+                    print("cart button pressed");
+                  }),
             ),
           ),
           // Stack(

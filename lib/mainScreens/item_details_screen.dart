@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hunger_box/global/global.dart';
 import 'package:hunger_box/model/items.dart';
 import 'package:number_inc_dec/number_inc_dec.dart';
+import 'package:badges/badges.dart' as badges;
 
 class ItemDetailsScreen extends StatefulWidget {
   final MenuItem? model;
@@ -34,41 +35,24 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
           centerTitle: true,
           automaticallyImplyLeading: true,
           actions: [
-            Stack(
-              children: [
-                IconButton(
-                  icon: const Icon(
-                    Icons.shopping_bag_sharp,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    // send user to cart screen
-                  },
+            Padding(
+              padding: const EdgeInsets.only(right: 8, top: 8),
+              child: badges.Badge(
+                position: badges.BadgePosition.topEnd(top: 0, end: 0),
+                badgeAnimation: const badges.BadgeAnimation.rotation(
+                  animationDuration: Duration(seconds: 1),
+                  loopAnimation: false,
+                  curve: Curves.fastOutSlowIn,
+                  colorChangeAnimationCurve: Curves.easeInCubic,
                 ),
-                Positioned(
-                  child: Stack(
-                    children: const [
-                      Icon(
-                        Icons.brightness_1,
-                        size: 20.0,
-                        color: Colors.white,
-                      ),
-                      Positioned(
-                        top: 3,
-                        right: 5,
-                        child: Center(
-                          child: Text(
-                            "0",
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 120, 130, 100),
-                                fontSize: 12),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                badgeContent: const Text(
+                    '3'), // change this to reflect how many items are in the cart
+                child: IconButton(
+                    icon: const Icon(Icons.shopping_cart),
+                    onPressed: () {
+                      print("cart button pressed");
+                    }),
+              ),
             ),
           ],
         ),
