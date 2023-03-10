@@ -28,7 +28,7 @@ class _ItemsDesignWidgetState extends State<ItemsDesignWidget> {
         borderRadius: BorderRadius.circular(12.0),
       ),
       child: InkWell(
-        splashColor: const Color.fromARGB(255, 139, 139, 139),
+        splashColor: Color.fromARGB(255, 139, 139, 139),
         child: Padding(
           padding: const EdgeInsets.all(5.0),
           child: Container(

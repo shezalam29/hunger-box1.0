@@ -35,7 +35,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
         slivers: [
           StreamBuilder<QuerySnapshot>(
             stream:
-                FirebaseFirestore.instance.collection("vendors").snapshots(),
+                FirebaseFirestore.instance.collection(vendorCllctn).snapshots(),
             builder: (context, snapshot) {
               return !snapshot.hasData
                   ? SliverToBoxAdapter(
@@ -47,9 +47,10 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                       crossAxisCount: 1,
                       //staggeredTileBuilder: (c) => StaggeredGridTile.fit(1),
                       itemBuilder: (context, index) {
-                        Vendors model = Vendors.fromJson(
+                        Vendor model = Vendor.fromJson(
                             snapshot.data!.docs[index].data()!
-                                as Map<String, dynamic>);
+                                as Map<String, dynamic>,
+                                expected: VendorDoc.fields);
                         return VendorsDesignWidget(
                           model: model,
                           context: context,
