@@ -170,40 +170,6 @@ class FirebaseHandler {
     await cllctnRef.doc(m.fields[ItemsDoc.itemID]).set(m.fields);
   }
 
-  /// Edit/Update a specified [MenuItem] in the Firebase database, located
-  /// under the specified vendor, using the values in [edited]. Ensures that
-  Future editMenuItem(
-      String vendorDocId, String menuId, Map<String, dynamic> edited) async {
-    await getDocument(vendorCllctn, vendorDocId)
-        .collection(itemsCllctn)
-        .doc(menuId)
-        .get()
-        .then((item) async {
-      if (item.exists) {
-        item.reference.set(
-          edited,
-          SetOptions(
-              mergeFields:
-                  ItemsDoc.fields.where((f) => edited.containsKey(f)).toList()),
-        );
-      }
-    });
-  }
-
-  /// Delete a specified [MenuItem] in the Firebase database, located
-  /// under the specified vendor.
-  Future deleteMenuItem(String vendorDocId, String menuId) async {
-    await getDocument(vendorCllctn, vendorDocId)
-        .collection(itemsCllctn)
-        .doc(menuId)
-        .get()
-        .then((item) async {
-      if (item.exists) {
-        item.reference.delete();
-      }
-    });
-  }
-
   DocumentReference<Map<String, dynamic>> getDocument(
       String cllctn, String docId) {
     return FirebaseFirestore.instance.collection(cllctn).doc(docId);

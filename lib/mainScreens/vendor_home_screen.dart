@@ -115,7 +115,7 @@ class _VendorHomeScreenState extends State<VendorHomeScreen> {
                         MenuItem model = MenuItem.fromJson(
                           snapshot.data!.docs[index].data()!
                               as Map<String, dynamic>,
-                            expected: ItemsDoc.fields);
+                        );
                         return ItemsDesignWidget(
                           model: model,
                           context: context,

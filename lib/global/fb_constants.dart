@@ -2,33 +2,6 @@ part of lib.globals;
 
 /// Set of constants that the firebase uses
 
-class _FirebaseDataObject {
-  late Map<String, dynamic> fields;
-
-  _FirebaseDataObject() {
-    fields = {};
-  }
-
-  _FirebaseDataObject.fromKeys(List<String> keys) {
-    fields = {for (var f in keys) f: null};
-  }
-
-  _FirebaseDataObject.fromMap(Map<String, dynamic> m) : fields = m;
-
-  _FirebaseDataObject.fromJson(Map<String, dynamic> values,
-      {List<String>? expected}) {
-    if (expected != null) {
-      fields = {
-        for (var f in expected) f: values.containsKey(f) ? values[f] : null
-      };
-    } else {
-      fields = values;
-    }
-  }
-}
-
-// ===========================================================================
-
 const String vendorCllctn = "vendors";
 
 class VendorDoc {
@@ -41,21 +14,11 @@ class VendorDoc {
   static const String email = "email";
   static const String name = "name";
   static const String uid = "vendorUID";
-
-  static const List<String> fields = [
-    address,
-    earnings,
-    lat,
-    lng,
-    status,
-    avatarUrl,
-    email,
-    name,
-    uid,
-  ];
 }
 
-class Vendor extends _FirebaseDataObject {
+class Vendor {
+  late Map<String, dynamic> fields;
+
   Vendor({
     String address = "",
     double earnings = 0.00,
@@ -66,45 +29,28 @@ class Vendor extends _FirebaseDataObject {
     String status = "",
     String vendorName = "",
     String vendorUID = "",
-  }) : super.fromKeys(VendorDoc.fields) {
-    fields[VendorDoc.address] = address;
-    fields[VendorDoc.earnings] = earnings;
-    fields[VendorDoc.lat] = lat;
-    fields[VendorDoc.lng] = lng;
-    fields[VendorDoc.status] = status;
-    fields[VendorDoc.avatarUrl] = vendorAvatarUrl;
-    fields[VendorDoc.email] = vendorEmail;
-    fields[VendorDoc.name] = vendorName;
-    fields[VendorDoc.uid] = vendorUID;
+  }) {
+    fields = {
+      VendorDoc.address: address,
+      VendorDoc.earnings: earnings,
+      VendorDoc.lat: lat,
+      VendorDoc.lng: lng,
+      VendorDoc.status: status,
+      VendorDoc.avatarUrl: vendorAvatarUrl,
+      VendorDoc.email: vendorEmail,
+      VendorDoc.name: vendorName,
+      VendorDoc.uid: vendorUID,
+    };
   }
-
-  Vendor.fromJson(Map<String, dynamic> values, {List<String>? expected})
-      : super.fromJson(values, expected: expected);
-
-  Vendor.fromMap(Map<String, dynamic> m) : super.fromMap(m);
 
   String get address {
     return fields[VendorDoc.address];
   }
 
-  String get email {
-    return fields[VendorDoc.email];
-  }
-
-  String get name {
-    return fields[VendorDoc.name];
-  }
-
   String get uid {
     return fields[VendorDoc.uid];
   }
-
-  dynamic get vendorAvatarUrl {
-    return fields[VendorDoc.avatarUrl];
-  }
 } // Vendor
-
-// ===========================================================================
 
 const String studentCllctn = "students";
 
@@ -141,8 +87,6 @@ class Student {
   }
 }
 
-// ===========================================================================
-
 const String itemsCllctn = "items";
 
 class ItemsDoc {
@@ -155,8 +99,6 @@ class ItemsDoc {
   static const String datePublished = "datePublished";
   static const String thumbnailUrl = "thumbnailUrl";
   static const String status = "status";
-  static const String points = "points";
-
   static const List<String> fields = [
     itemID,
     vendorUID,
@@ -167,11 +109,12 @@ class ItemsDoc {
     datePublished,
     thumbnailUrl,
     status,
-    points,
   ];
 }
 
-class MenuItem extends _FirebaseDataObject {
+class MenuItem {
+  Map<String, dynamic> fields = {for (var f in ItemsDoc.fields) f: null};
+
   MenuItem({
     String itemID = "",
     String vendorUID = "",
@@ -182,8 +125,7 @@ class MenuItem extends _FirebaseDataObject {
     DateTime? datePublished,
     String thumbnailUrl = "",
     String status = "",
-    int points = 0,
-  }) : super.fromKeys(ItemsDoc.fields) {
+  }) {
     fields[ItemsDoc.itemID] = itemID;
     fields[ItemsDoc.vendorUID] = vendorUID;
     fields[ItemsDoc.itemTitle] = itemTitle;
@@ -193,7 +135,6 @@ class MenuItem extends _FirebaseDataObject {
     fields[ItemsDoc.datePublished] = datePublished ?? DateTime.now();
     fields[ItemsDoc.thumbnailUrl] = thumbnailUrl;
     fields[ItemsDoc.status] = status;
-    fields[ItemsDoc.points] = points;
   }
 
   String get itemID {
@@ -224,11 +165,14 @@ class MenuItem extends _FirebaseDataObject {
     return fields[ItemsDoc.thumbnailUrl];
   }
 
-  MenuItem.fromJson(Map<String, dynamic> json, {List<String>? expected})
-      : super.fromJson(json, expected: expected);
+  /// Create a [MenuItem] from a Map. Checks that none of the required
+  /// keys are missing
+  MenuItem.fromJson(Map<String, dynamic> json) {
+    for (var key in ItemsDoc.fields) {
+      fields[key] = json.containsKey(key) ? json[key] : "";
+    }
+  }
 } // MenuItem
-
-// ===========================================================================
 
 const String cartCllctn = "userCart";
 
@@ -261,3 +205,7 @@ class CartItem {
     fields[CartItemDoc.itemNote] = itemNote;
   }
 }
+
+class OrderDoc {}
+
+class Order {}
