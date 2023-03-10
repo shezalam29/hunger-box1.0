@@ -36,7 +36,7 @@ class _CartScreenState extends State<CartScreen> {
         slivers: [
           StreamBuilder<QuerySnapshot>(
             stream:
-                FirebaseFirestore.instance.collection("vendors").snapshots(),
+                FirebaseFirestore.instance.collection(vendorCllctn).snapshots(),
             builder: (context, snapshot) {
               return !snapshot.hasData
                   ? SliverToBoxAdapter(
@@ -49,12 +49,11 @@ class _CartScreenState extends State<CartScreen> {
                       //staggeredTileBuilder: (c) => StaggeredGridTile.fit(1),
                       itemBuilder: (context, index) {
                         Vendors model = Vendors.fromJson(
-                            snapshot.data!.docs[index].data()!
-                                as Map<String, dynamic>);
-                        return VendorsDesignWidget(
-                          model: model,
-                          context: context,
+                          snapshot.data!.docs[index].data()!
+                              as Map<String, dynamic>,
                         );
+                        return VendorsDesignWidget(
+                            model: model, context: context);
                       },
                       itemCount: snapshot.data!.docs.length,
                     );
