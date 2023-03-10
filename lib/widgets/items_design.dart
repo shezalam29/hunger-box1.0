@@ -19,7 +19,7 @@ class _ItemsDesignWidgetState extends State<ItemsDesignWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(8),
+      margin: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         border: Border.all(
           color: Colors.grey,
@@ -28,7 +28,7 @@ class _ItemsDesignWidgetState extends State<ItemsDesignWidget> {
         borderRadius: BorderRadius.circular(12.0),
       ),
       child: InkWell(
-        splashColor: Color.fromARGB(255, 139, 139, 139),
+        splashColor: const Color.fromARGB(255, 139, 139, 139),
         child: Padding(
           padding: const EdgeInsets.all(5.0),
           child: Container(
