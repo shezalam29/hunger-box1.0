@@ -165,9 +165,9 @@ class FirebaseHandler {
 
   Future uploadMenuItem(String vendorDocID, MenuItem m) async {
     final cllctnRef =
-        getDocument(vendorCllctn, vendorDocID).collection(menusCllctn);
+        getDocument(vendorCllctn, vendorDocID).collection(itemsCllctn);
 
-    await cllctnRef.doc(m.fields[MenusDoc.menuID]).set(m.fields);
+    await cllctnRef.doc(m.fields[ItemsDoc.itemID]).set(m.fields);
   }
 
   DocumentReference<Map<String, dynamic>> getDocument(

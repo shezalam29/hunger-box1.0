@@ -5,17 +5,17 @@ import 'package:flutter/material.dart';
 // import 'package:hunger_box/model/menus.dart';
 import 'package:hunger_box/global/global.dart';
 
-class InfoDesignWidget extends StatefulWidget {
+class ItemsDesignWidget extends StatefulWidget {
   MenuItem? model;
   BuildContext? context;
 
-  InfoDesignWidget({this.model, this.context});
+  ItemsDesignWidget({this.model, this.context});
 
   @override
-  State<InfoDesignWidget> createState() => _InfoDesignWidgetState();
+  State<ItemsDesignWidget> createState() => _ItemsDesignWidgetState();
 }
 
-class _InfoDesignWidgetState extends State<InfoDesignWidget> {
+class _ItemsDesignWidgetState extends State<ItemsDesignWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -54,7 +54,7 @@ class _InfoDesignWidgetState extends State<InfoDesignWidget> {
                   height: 1.0,
                 ),
                 Text(
-                  widget.model!.menuTitle,
+                  widget.model!.itemTitle,
                   style: const TextStyle(
                     overflow: TextOverflow.ellipsis, // text overflow
                     color: Colors.black,
@@ -72,7 +72,7 @@ class _InfoDesignWidgetState extends State<InfoDesignWidget> {
                   ),
                 ),
                 Text(
-                  widget.model!.menuInfo,
+                  widget.model!.itemInfo,
                   style: const TextStyle(
                     overflow: TextOverflow.ellipsis,
                     color: Color.fromARGB(255, 120, 130, 100),

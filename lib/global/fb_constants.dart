@@ -87,22 +87,24 @@ class Student {
   }
 }
 
-const String menusCllctn = "menus";
+const String itemsCllctn = "items";
 
-class MenusDoc {
-  static const String menuID = "menuID";
+class ItemsDoc {
+  static const String itemID = "itemID";
   static const String vendorUID = "vendorUID";
-  static const String menuTitle = "menuTitle";
-  static const String menuInfo = "menuInfo";
+  static const String itemTitle = "itemTitle";
+  static const String itemInfo = "itemInfo";
+  static const String itemInfoLong = "itemInfoLong";
   static const String price = "price";
   static const String datePublished = "datePublished";
   static const String thumbnailUrl = "thumbnailUrl";
   static const String status = "status";
   static const List<String> fields = [
-    menuID,
+    itemID,
     vendorUID,
-    menuTitle,
-    menuInfo,
+    itemTitle,
+    itemInfo,
+    itemInfoLong,
     price,
     datePublished,
     thumbnailUrl,
@@ -111,56 +113,62 @@ class MenusDoc {
 }
 
 class MenuItem {
-  Map<String, dynamic> fields = {for (var f in MenusDoc.fields) f: null};
+  Map<String, dynamic> fields = {for (var f in ItemsDoc.fields) f: null};
 
   MenuItem({
-    String menuID = "",
+    String itemID = "",
     String vendorUID = "",
-    String menuTitle = "",
-    String menuInfo = "",
+    String itemTitle = "",
+    String itemInfo = "",
+    String itemInfoLong = "",
     double price = 0.00,
     DateTime? datePublished,
     String thumbnailUrl = "",
     String status = "",
   }) {
-    fields[MenusDoc.menuID] = menuID;
-    fields[MenusDoc.vendorUID] = vendorUID;
-    fields[MenusDoc.menuTitle] = menuTitle;
-    fields[MenusDoc.menuInfo] = menuInfo;
-    fields[MenusDoc.price] = price;
-    fields[MenusDoc.datePublished] = datePublished ?? DateTime.now();
-    fields[MenusDoc.thumbnailUrl] = thumbnailUrl;
-    fields[MenusDoc.status] = status;
+    fields[ItemsDoc.itemID] = itemID;
+    fields[ItemsDoc.vendorUID] = vendorUID;
+    fields[ItemsDoc.itemTitle] = itemTitle;
+    fields[ItemsDoc.itemInfo] = itemInfo;
+    fields[ItemsDoc.itemInfoLong] = itemInfoLong;
+    fields[ItemsDoc.price] = price;
+    fields[ItemsDoc.datePublished] = datePublished ?? DateTime.now();
+    fields[ItemsDoc.thumbnailUrl] = thumbnailUrl;
+    fields[ItemsDoc.status] = status;
   }
 
-  String get menuID {
-    return fields[MenusDoc.menuID];
+  String get itemID {
+    return fields[ItemsDoc.itemID];
   }
 
-  String get menuTitle {
-    return fields[MenusDoc.menuTitle];
+  String get itemTitle {
+    return fields[ItemsDoc.itemTitle];
   }
 
-  String get menuInfo {
-    return fields[MenusDoc.menuInfo];
+  String get itemInfo {
+    return fields[ItemsDoc.itemInfo];
+  }
+
+  String get itemInfoLong {
+    return fields[ItemsDoc.itemInfoLong];
   }
 
   String get priceStr {
-    return fields[MenusDoc.price].toStringAsFixed(2);
+    return fields[ItemsDoc.price].toStringAsFixed(2);
   }
 
   String get price {
-    return fields[MenusDoc.price];
+    return fields[ItemsDoc.price];
   }
 
   String get thumbnailUrl {
-    return fields[MenusDoc.thumbnailUrl];
+    return fields[ItemsDoc.thumbnailUrl];
   }
 
   /// Create a [MenuItem] from a Map. Checks that none of the required
   /// keys are missing
   MenuItem.fromJson(Map<String, dynamic> json) {
-    for (var key in MenusDoc.fields) {
+    for (var key in ItemsDoc.fields) {
       fields[key] = json.containsKey(key) ? json[key] : "";
     }
   }

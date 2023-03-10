@@ -7,7 +7,7 @@ import '../widgets/user_drawer.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:hunger_box/model/vendors.dart';
 
-import '../widgets/info_design.dart';
+import '../widgets/vendors_design.dart';
 import '../widgets/progress_bar.dart';
 
 class CartScreen extends StatefulWidget {
@@ -51,7 +51,7 @@ class _CartScreenState extends State<CartScreen> {
                         Vendors model = Vendors.fromJson(
                             snapshot.data!.docs[index].data()!
                                 as Map<String, dynamic>);
-                        return InfoDesignWidget(
+                        return VendorsDesignWidget(
                           model: model,
                           context: context,
                         );

@@ -12,14 +12,14 @@ import '../widgets/text_widget.dart';
 
 import "package:image_picker/image_picker.dart";
 
-class VendorHomeScreen extends StatefulWidget {
-  const VendorHomeScreen({super.key});
+class ItemsScreen extends StatefulWidget {
+  const ItemsScreen({super.key});
 
   @override
-  State<VendorHomeScreen> createState() => _VendorHomeScreenState();
+  State<ItemsScreen> createState() => _ItemsScreenState();
 }
 
-class _VendorHomeScreenState extends State<VendorHomeScreen> {
+class _ItemsScreenState extends State<ItemsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,57 +30,9 @@ class _VendorHomeScreenState extends State<VendorHomeScreen> {
             color: Color.fromARGB(255, 120, 130, 100),
           ),
         ),
-        title: Text(sharedPreferences.getName() ?? "NO NAME FOUND"),
+        title: const Text("Hunger Box"),
         centerTitle: true,
         automaticallyImplyLeading: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.post_add),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return SimpleDialog(
-                    title: const Text(
-                      "Item Image",
-                      style: TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold),
-                    ),
-                    children: [
-                      SimpleDialogOption(
-                        // ignore: sort_child_properties_last
-                        child: const Text(
-                          "Capture with Camera",
-                          style:
-                              TextStyle(color: Color.fromARGB(255, 95, 93, 93)),
-                        ),
-                        onPressed: () =>
-                            pickImageAndRedirect(ImageSource.camera),
-                      ),
-                      SimpleDialogOption(
-                        // ignore: sort_child_properties_last
-                        child: const Text(
-                          "Choose from Gallery",
-                          style:
-                              TextStyle(color: Color.fromARGB(255, 95, 93, 93)),
-                        ),
-                        onPressed: () =>
-                            pickImageAndRedirect(ImageSource.gallery),
-                      ),
-                      SimpleDialogOption(
-                        child: const Text(
-                          "Cancel",
-                          style: TextStyle(color: Colors.red),
-                        ),
-                        onPressed: () => Navigator.pop(context),
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
-          ),
-        ],
       ),
 
       // ignore: prefer_const_constructors

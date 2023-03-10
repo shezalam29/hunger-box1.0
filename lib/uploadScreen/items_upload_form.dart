@@ -10,21 +10,22 @@ import "package:image_picker/image_picker.dart";
 import "../global/global.dart";
 import "../widgets/error_dialog.dart";
 
-class MenusUploadForm extends StatefulWidget {
+class ItemsUploadForm extends StatefulWidget {
   final XFile imageXFile;
-  const MenusUploadForm({super.key, required this.imageXFile});
+  const ItemsUploadForm({super.key, required this.imageXFile});
 
   @override
-  State<MenusUploadForm> createState() =>
-      _MenusUploadFormState(imageXFile: imageXFile);
+  State<ItemsUploadForm> createState() =>
+      _ItemsUploadFormState(imageXFile: imageXFile);
 }
 
-class _MenusUploadFormState extends State<MenusUploadForm> {
+class _ItemsUploadFormState extends State<ItemsUploadForm> {
   final XFile imageXFile;
-  _MenusUploadFormState({required this.imageXFile});
+  _ItemsUploadFormState({required this.imageXFile});
 
   //text input Controllers
-  TextEditingController menuInfoController = TextEditingController();
+  TextEditingController itemInfoController = TextEditingController();
+  TextEditingController itemInfoLongController = TextEditingController();
   TextEditingController titleController = TextEditingController();
   TextEditingController priceController = TextEditingController();
 
@@ -33,7 +34,7 @@ class _MenusUploadFormState extends State<MenusUploadForm> {
   //Name of the image url
   String uniqueIdName = DateTime.now().millisecondsSinceEpoch.toString();
 
-  menusUploadFormScreen() {
+  ItemsUploadFormScreen() {
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: Container(
@@ -42,7 +43,7 @@ class _MenusUploadFormState extends State<MenusUploadForm> {
           ),
         ),
         title: const Text(
-          "Menu Item Info",
+          "Item Info",
           style: TextStyle(fontSize: 20),
         ),
         centerTitle: true,
@@ -131,9 +132,33 @@ class _MenusUploadFormState extends State<MenusUploadForm> {
               width: 250,
               child: TextField(
                 style: const TextStyle(color: Colors.black),
-                controller: menuInfoController,
+                controller: itemInfoController,
                 decoration: const InputDecoration(
                   hintText: "General description",
+                  hintStyle: TextStyle(color: Colors.grey),
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+          ),
+
+          const SizedBox(
+            height: 15,
+          ),
+
+          ListTile(
+            leading: const Icon(
+              Icons.perm_device_information,
+              color: Color.fromARGB(255, 120, 130, 100),
+            ),
+            // ignore: sized_box_for_whitespace
+            title: Container(
+              width: 250,
+              child: TextField(
+                style: const TextStyle(color: Colors.black),
+                controller: itemInfoLongController,
+                decoration: const InputDecoration(
+                  hintText: "Long description",
                   hintStyle: TextStyle(color: Colors.grey),
                   border: OutlineInputBorder(),
                 ),
@@ -167,7 +192,7 @@ class _MenusUploadFormState extends State<MenusUploadForm> {
   }
 
   validateUploadForm() async {
-    if (menuInfoController.text.isNotEmpty &&
+    if (itemInfoController.text.isNotEmpty &&
         titleController.text.isNotEmpty &&
         priceController.text.isNotEmpty) {
       setState(() {
@@ -179,7 +204,7 @@ class _MenusUploadFormState extends State<MenusUploadForm> {
       String fileName =
           "${DateTime.now().millisecondsSinceEpoch.toString()}.jpg";
       String downloadUrl =
-          await FBH.uploadImage(fileName, imageXFile.path, menusCllctn);
+          await FBH.uploadImage(fileName, imageXFile.path, itemsCllctn);
       //48
       //Save image into firebase
       uploadItem(downloadUrl);
@@ -196,7 +221,8 @@ class _MenusUploadFormState extends State<MenusUploadForm> {
 
   clearMenuUploadForm() {
     setState(() {
-      menuInfoController.clear();
+      itemInfoController.clear();
+      itemInfoLongController.clear();
       titleController.clear();
       priceController.clear();
     });
@@ -224,10 +250,11 @@ class _MenusUploadFormState extends State<MenusUploadForm> {
     FBH.uploadMenuItem(
         sharedPreferences.getUID()!,
         MenuItem(
-          menuID: uniqueIdName,
+          itemID: uniqueIdName,
           vendorUID: sharedPreferences.getUID()!,
-          menuTitle: titleController.text.toString(),
-          menuInfo: menuInfoController.text.toString(),
+          itemTitle: titleController.text.toString(),
+          itemInfo: itemInfoController.text.toString(),
+          itemInfoLong: itemInfoLongController.text.toString(),
           price: double.parse(priceController.text),
           datePublished: DateTime.now(),
           status: "available",
@@ -242,6 +269,6 @@ class _MenusUploadFormState extends State<MenusUploadForm> {
 
   @override
   Widget build(BuildContext context) {
-    return menusUploadFormScreen();
+    return ItemsUploadFormScreen();
   }
 }

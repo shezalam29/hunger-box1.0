@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:hunger_box/model/vendors.dart';
 
-class InfoDesignWidget extends StatefulWidget {
+class VendorsDesignWidget extends StatefulWidget {
   Vendors? model;
   BuildContext? context;
 
-  InfoDesignWidget({this.model, this.context});
+  VendorsDesignWidget({this.model, this.context});
 
   @override
-  State<InfoDesignWidget> createState() => _InfoDesignWidgetState();
+  State<VendorsDesignWidget> createState() => _VendorsDesignWidgetState();
 }
 
-class _InfoDesignWidgetState extends State<InfoDesignWidget> {
+class _VendorsDesignWidgetState extends State<VendorsDesignWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(

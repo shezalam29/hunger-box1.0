@@ -1,32 +1,35 @@
 //49
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Menus {
-  String? menuID;
+class Items {
+  String? itemID;
   String? vendorUID;
-  String? menuTitle;
-  String? menuInfo;
+  String? itemTitle;
+  String? itemInfo;
+  String? itemInfoLong;
   double? price;
   Timestamp? datePublished;
   String? thumbnailUrl;
   String? status;
 
-  Menus({
-    this.menuID,
+  Items({
+    this.itemID,
     this.vendorUID,
-    this.menuTitle,
+    this.itemTitle,
     this.price,
-    this.menuInfo,
+    this.itemInfo,
+    this.itemInfoLong,
     this.datePublished,
     this.thumbnailUrl,
     this.status,
   });
 
-  Menus.fromJson(Map<String, dynamic> json) {
-    menuID = json["menuID"];
+  Items.fromJson(Map<String, dynamic> json) {
+    itemID = json["itemID"];
     vendorUID = json["vendorUID"];
-    menuTitle = json["menuTitle"];
-    menuInfo = json["menuInfo"];
+    itemTitle = json["itemTitle"];
+    itemInfo = json["itemInfo"];
+    itemInfoLong = json["itemInfoLong"];
     price = json["price"];
     datePublished = json["datePublished"];
     thumbnailUrl = json["thumbnailUrl"];
@@ -35,10 +38,10 @@ class Menus {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
-    data["menuID"] = menuID;
+    data["itemID"] = itemID;
     data["vendorUID"] = vendorUID;
-    data["menuTitle"] = menuTitle;
-    data["menuInfo"] = menuInfo;
+    data["itemTitle"] = itemTitle;
+    data["itemInfo"] = itemInfo;
     data["price"] = price;
     data["datePublished"] = datePublished;
     data["thumbnailUrl"] = thumbnailUrl;
