@@ -57,21 +57,27 @@ class _VendorsDesignWidgetState extends State<VendorsDesignWidget> {
                   height: 10.0,
                 ),
 
-                Text(
-                  widget.model!.name!,
-                  style: const TextStyle(
-                    color: Color.fromARGB(255, 0, 0, 0),
-                    fontSize: 20,
-                    //fontFamily: "Raleway-SemiBold",
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Text(
+                    widget.model!.name!,
+                    style: const TextStyle(
+                      color: Color.fromARGB(255, 0, 0, 0),
+                      fontSize: 20,
+                      //fontFamily: "Raleway-SemiBold",
+                    ),
                   ),
                 ),
 
-                Text(
-                  widget.model!.email!,
-                  style: const TextStyle(
-                    color: Color.fromARGB(255, 0, 0, 0),
-                    fontSize: 15,
-                    fontFamily: "Raleway-Italic",
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Text(
+                    widget.model!.email!,
+                    style: const TextStyle(
+                      color: Color.fromARGB(255, 0, 0, 0),
+                      fontSize: 15,
+                      fontFamily: "Raleway-Italic",
+                    ),
                   ),
                 ),
                 // Divider(
