@@ -47,10 +47,10 @@ class _CartScreenState extends State<CartScreen> {
                       crossAxisCount: 1,
                       //staggeredTileBuilder: (c) => StaggeredGridTile.fit(1),
                       itemBuilder: (context, index) {
-                        Vendors model = Vendors.fromJson(
-                          snapshot.data!.docs[index].data()!
-                              as Map<String, dynamic>,
-                        );
+                        Vendor model = Vendor.fromJson(
+                            snapshot.data!.docs[index].data()!
+                                as Map<String, dynamic>,
+                            expected: VendorDoc.fields);
                         return VendorsDesignWidget(
                             model: model, context: context);
                       },

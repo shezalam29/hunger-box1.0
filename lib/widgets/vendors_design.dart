@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hunger_box/mainScreens/user_items_screen.dart';
-import 'package:hunger_box/model/vendors.dart';
+import 'package:hunger_box/global/global.dart';
 
 class VendorsDesignWidget extends StatefulWidget {
-  Vendors? model;
+  Vendor? model;
   BuildContext? context;
 
   VendorsDesignWidget({this.model, this.context});
@@ -46,7 +46,7 @@ class _VendorsDesignWidgetState extends State<VendorsDesignWidget> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(15),
                     child: Image.network(
-                      widget.model!.vendorAvatarUrl!,
+                      widget.model!.vendorAvatarUrl,
                       height: 165,
                       width: MediaQuery.of(context).size.width,
                       fit: BoxFit.cover,
@@ -60,7 +60,7 @@ class _VendorsDesignWidgetState extends State<VendorsDesignWidget> {
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: Text(
-                    widget.model!.name!,
+                    widget.model!.name,
                     style: const TextStyle(
                       color: Color.fromARGB(255, 0, 0, 0),
                       fontSize: 20,
@@ -72,7 +72,7 @@ class _VendorsDesignWidgetState extends State<VendorsDesignWidget> {
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: Text(
-                    widget.model!.email!,
+                    widget.model!.email,
                     style: const TextStyle(
                       color: Color.fromARGB(255, 0, 0, 0),
                       fontSize: 15,

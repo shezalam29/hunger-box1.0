@@ -9,9 +9,6 @@ class FirebaseHandler {
   /// Singleton to insure only single user is logged on
   static FirebaseHandler? _self;
 
-  /// Cached local password
-  late String _psswrd;
-
   /// cached Current User
   User? currentUser;
 
@@ -20,6 +17,9 @@ class FirebaseHandler {
 
   /// Cached boolean for if current user is vendor
   bool? _isVendor;
+
+  /// Cache of the Cart
+  Map<String, MenuItem> _cart_cache = {};
 
   /// Getter for [_isVendor]
   /// If it hasn't been set for some reason, queries the user, caches the
@@ -52,7 +52,6 @@ class FirebaseHandler {
         .signInWithEmailAndPassword(email: usrName, password: psswrd)
         .then((usrCred) async {
       currentUser = usrCred.user;
-      _psswrd = psswrd;
       _isVendor = await _isUserVendor(usrCred.user!);
     });
   }
@@ -61,7 +60,6 @@ class FirebaseHandler {
   Future logout() async {
     await FirebaseAuth.instance.signOut();
     currentUser = null;
-    _psswrd = "";
     _isVendor = null;
   }
 
@@ -83,7 +81,6 @@ class FirebaseHandler {
         .createUserWithEmailAndPassword(email: email, password: psswrd)
         .then((usrCred) {
       currentUser = usrCred.user;
-      _psswrd = psswrd;
       _isVendor = false;
     });
 
@@ -110,7 +107,6 @@ class FirebaseHandler {
         .createUserWithEmailAndPassword(email: email, password: psswrd)
         .then((usrCred) {
       currentUser = usrCred.user;
-      _psswrd = psswrd;
       _isVendor = true;
     });
 
@@ -137,9 +133,15 @@ class FirebaseHandler {
   }
 
   //------------------------------ CART METHODS ------------------------------
-  Future addItemToCurrentUserCart(CartItem ci) async {
+  List<MenuItem> getCurrentUserCart() {
+    return _cart_cache.values.toList();
+  }
+
+  /// Need to convert to a cart item w/ quantity
+  Future addItemToCurrentUserCart(MenuItem mi) async {
     var docRef = getDocument(studentCllctn, currentUser!.uid);
-    await docRef.collection(cartCllctn).add(ci.fields);
+    _cart_cache[mi.itemID] = mi;
+    await docRef.collection(cartCllctn).add(mi.fields);
   }
 
   Future removeItemFromCurrentUserCart(String cartItemId) async {
@@ -147,6 +149,8 @@ class FirebaseHandler {
         .collection(studentCllctn)
         .doc(currentUser!.uid);
     await docRef.collection(cartCllctn).doc(cartItemId).delete();
+
+    _cart_cache.remove(cartItemId);
   }
 
   Future emptyCurrentUserCart() async {
@@ -160,6 +164,8 @@ class FirebaseHandler {
         doc.reference.delete();
       }
     });
+
+    _cart_cache.clear();
   }
   // CART METHODS
 
@@ -167,7 +173,7 @@ class FirebaseHandler {
     final cllctnRef =
         getDocument(vendorCllctn, vendorDocID).collection(itemsCllctn);
 
-    await cllctnRef.doc(m.fields[ItemsDoc.itemID]).set(m.fields);
+    await cllctnRef.doc(m.itemID).set(m.fields);
   }
 
   DocumentReference<Map<String, dynamic>> getDocument(
@@ -194,6 +200,16 @@ class FirebaseHandler {
   }
 
   // ============================ PRIVATE METHODS ============================
+
+  Future<List<MenuItem>> _queryCurrentUserCart() async {
+    var cart = await FirebaseFirestore.instance
+        .collection(studentCllctn)
+        .doc(currentUser!.uid)
+        .collection(cartCllctn)
+        .get();
+    return [for (var i in cart.docs) MenuItem.fromJson(i.data())];
+  }
+
   /// Helper function to check if
   Future<bool> _isUserVendor(User u) async {
     return await _getDocumentData(vendorCllctn, u.uid).then((usr) {

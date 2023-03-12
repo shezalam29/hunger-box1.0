@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hunger_box/global/global.dart';
-import 'package:hunger_box/model/items.dart';
 import 'package:number_inc_dec/number_inc_dec.dart';
+import '../widgets/cart_button.dart';
 import 'package:badges/badges.dart' as badges;
 
 class ItemDetailsScreen extends StatefulWidget {
@@ -47,11 +47,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                 ),
                 badgeContent: const Text(
                     '3'), // change this to reflect how many items are in the cart
-                child: IconButton(
-                    icon: const Icon(Icons.shopping_cart),
-                    onPressed: () {
-                      print("cart button pressed");
-                    }),
+                child: CartButton(),
               ),
             ),
           ],
@@ -115,8 +111,16 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                     primary: const Color.fromARGB(255, 120, 130, 100),
                     padding: const EdgeInsets.symmetric(
                         horizontal: 50, vertical: 20)),
-                onPressed: () {
-                  // add item to cart not done
+                onPressed: () async {
+                  await FBH.addItemToCurrentUserCart(widget.model!);
+                  showDialog(
+                      context: context,
+                      builder: (c) {
+                        return AlertDialog(
+                          content: Text(
+                              "${counterTextEditingController.text}x ${widget.model!.itemTitle}added to cart"),
+                        );
+                      });
                 },
                 child: const Text(
                   "Add to Cart",

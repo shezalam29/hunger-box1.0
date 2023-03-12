@@ -4,10 +4,10 @@ import 'package:hunger_box/global/global.dart';
 
 import '../widgets/user_drawer.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:hunger_box/model/vendors.dart';
 
 import '../widgets/vendors_design.dart';
 import '../widgets/progress_bar.dart';
+import '../widgets/cart_button.dart';
 
 import 'package:badges/badges.dart' as badges;
 
@@ -45,11 +45,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
               ),
               badgeContent: const Text(
                   '3'), // change this to reflect how many items are in the cart
-              child: IconButton(
-                  icon: const Icon(Icons.shopping_cart),
-                  onPressed: () {
-                    print("cart button pressed");
-                  }),
+              child: CartButton(),
             ),
           ),
           // Stack(
@@ -106,10 +102,10 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                       crossAxisCount: 1,
                       //staggeredTileBuilder: (c) => StaggeredGridTile.fit(1),
                       itemBuilder: (context, index) {
-                        Vendors model = Vendors.fromJson(
-                          snapshot.data!.docs[index].data()!
-                              as Map<String, dynamic>,
-                        );
+                        Vendor model = Vendor.fromJson(
+                            snapshot.data!.docs[index].data()!
+                                as Map<String, dynamic>,
+                            expected: VendorDoc.fields);
                         return VendorsDesignWidget(
                           model: model,
                           context: context,

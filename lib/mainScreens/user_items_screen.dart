@@ -2,20 +2,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:hunger_box/global/global.dart';
-import 'package:hunger_box/model/vendors.dart';
+import '../widgets/cart_button.dart';
 import 'package:hunger_box/uploadScreen/items_upload_form.dart';
-
-import '../widgets/drawer.dart';
 
 import '../widgets/user_items_design.dart';
 import '../widgets/progress_bar.dart';
-import '../widgets/text_widget.dart';
 
 import 'package:badges/badges.dart' as badges;
 import "package:image_picker/image_picker.dart";
 
 class UserItemsScreen extends StatefulWidget {
-  final Vendors? model;
+  final Vendor? model;
   UserItemsScreen({this.model});
 
   @override
@@ -56,11 +53,7 @@ class _UserItemsScreenState extends State<UserItemsScreen> {
               ),
               badgeContent: const Text(
                   '3'), // change this to reflect how many items are in the cart
-              child: IconButton(
-                  icon: const Icon(Icons.shopping_cart),
-                  onPressed: () {
-                    print("cart button pressed");
-                  }),
+              child: CartButton(),
             ),
           ),
         ],
@@ -79,7 +72,7 @@ class _UserItemsScreenState extends State<UserItemsScreen> {
             // TODO need to fix this to run through FBH
             stream: FirebaseFirestore.instance
                 .collection(vendorCllctn)
-                .doc(widget.model!.vendorUID)
+                .doc(widget.model!.uid)
                 .collection(itemsCllctn)
                 .snapshots(),
             builder: (context, snapshot) {
