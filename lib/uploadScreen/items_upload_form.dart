@@ -2,6 +2,7 @@ import "dart:io";
 
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 
 import "package:hunger_box/widgets/progress_bar.dart";
 import 'package:firebase_storage/firebase_storage.dart' as storageRef;
@@ -178,6 +179,11 @@ class _ItemsUploadFormState extends State<ItemsUploadForm> {
               child: TextField(
                 style: const TextStyle(color: Colors.black),
                 controller: priceController,
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.allow(RegExp("[0-9|.]")),
+                  CurrencyInputFormatter(),
+                ],
                 decoration: const InputDecoration(
                   hintText: "Price",
                   hintStyle: TextStyle(color: Colors.grey),
@@ -270,5 +276,27 @@ class _ItemsUploadFormState extends State<ItemsUploadForm> {
   @override
   Widget build(BuildContext context) {
     return ItemsUploadFormScreen();
+  }
+}
+
+class CurrencyInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    var parts = newValue.text.split(".");
+    String cents = "";
+    if (parts.length > 1) {
+      cents = ".";
+      if (parts[1].length > 2) {
+        String s = oldValue.text;
+        cents += s.substring(s.length - 2, s.length);
+      } else {
+        cents += parts[1];
+      }
+    }
+    String newText = "${parts[0]}$cents";
+    return newValue.copyWith(
+        text: newText,
+        selection: TextSelection.collapsed(offset: newText.length));
   }
 }
